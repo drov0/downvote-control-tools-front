@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="WEB_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/../community-control-tools-front/.tmp" />
+      <excludeFolder url="file://$MODULE_DIR$/../community-control-tools-front/build" />
+      <excludeFolder url="file://$MODULE_DIR$/../community-control-tools-front/temp" />
+      <excludeFolder url="file://$MODULE_DIR$/../community-control-tools-front/tmp" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

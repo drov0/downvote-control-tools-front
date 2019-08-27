@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/community-control-tools-front.iml" filepath="$PROJECT_DIR$/.idea/community-control-tools-front.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../downvote-control-tools-front/.idea/downvote-control-tools-front.iml" filepath="$PROJECT_DIR$/../downvote-control-tools-front/.idea/downvote-control-tools-front.iml" />
     </modules>
   </component>
 </project>
