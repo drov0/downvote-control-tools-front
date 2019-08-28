@@ -10,7 +10,7 @@ var client = new dsteem.Client('https://api.steemit.com');
 
 
 
-const fetchLogin = (admin = false) => async (dispatch) => {
+const fetchLogin = () => async (dispatch) => {
 
     const cookies = new Cookies();
 
@@ -18,7 +18,7 @@ const fetchLogin = (admin = false) => async (dispatch) => {
     if (cookies.get("name") !== undefined && cookies.get("username") !== undefined && cookies.get("avatar") !== undefined && cookies.get("token") !== undefined)
     {
         const response = (await backend.post('/auth/user',
-            {username: cookies.get("username"), token: cookies.get("token"), admin})).data;
+            {username: cookies.get("username"), token: cookies.get("token")})).data;
 
         if (response.status === "ok") {
 
@@ -91,8 +91,43 @@ const login = (data) => async(dispatch) => {
 };
 
 
+
+
+const fetchNegativeTrail = (username, token) => async (dispatch) => {
+
+        const response = (await backend.post('/settings/get_negative_trail',
+            {username: username, token: token})).data;
+
+        if (response.status === "ok") {
+           return dispatch({
+                type: 'FETCH_NEGATIVE_TRAIL',
+                payload: response.data
+            });
+        }
+};
+
+
+
+
+const fetchPositiveTrail = (username, token) => async (dispatch) => {
+
+        const response = (await backend.post('/settings/get_positive_trail',
+            {username: username, token: token})).data;
+
+        if (response.status === "ok") {
+           return dispatch({
+                type: 'FETCH_POSITIVE_TRAIL',
+                payload: response.data
+            });
+        }
+};
+
+
+
 export {
 
     fetchLogin,
     login,
+    fetchNegativeTrail,
+    fetchPositiveTrail
 };

@@ -73,9 +73,27 @@ const userReducer = (state  = "", action) => {
     return state;
 };
 
+const dataReducer = (state  = {negative_trail : "", positive_trail : ""}, action) => {
+
+    if (action.type === "FETCH_NEGATIVE_TRAIL")
+    {
+            let new_state = _.cloneDeep(state);
+            new_state.negative_trail = action.payload;
+            return new_state
+    } else if (action.type === "FETCH_POSITIVE_TRAIL")
+    {
+        let new_state = _.cloneDeep(state);
+        new_state.positive_trail = action.payload;
+        return new_state
+    }
+
+    return state;
+
+};
 
 
 
 export default combineReducers({
     user : userReducer,
+    data : dataReducer
 })

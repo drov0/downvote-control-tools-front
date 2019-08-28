@@ -6,6 +6,8 @@ import {} from "../actions/actions"
 import Login from "./Login";
 import {login} from "../actions/actions";
 import {fetchLogin} from "../actions/actions";
+import {fetchNegativeTrail} from "../actions/actions";
+import {fetchPositiveTrail} from "../actions/actions";
 const queryString = require('query-string');
 
 const Joi = require('joi');
@@ -13,20 +15,21 @@ const Joi = require('joi');
 class Settings extends React.Component
 {
 
-    state = {vote_threshold : 98, new_n_trail_username : "", new_n_trail_ratio : 1}
+    state = {vote_threshold : 98, new_n_trail_username : "", new_n_trail_ratio : 1};
 
     async componentDidMount() {
+        this.props.fetchNegativeTrail(this.props.logged_user.username, this.props.logged_user.token );
+        this.props.fetchPositiveTrail(this.props.logged_user.username, this.props.logged_user.token );
     }
 
 
     render_negative_trails = () =>
     {
         let rows = [];
-
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < this.props.data.negative_trail.length; i++) {
             rows.push(<tr>
-                <td>Howo</td>
-                <td>2</td>
+                <td>{this.props.data.negative_trail[i].trailed}</td>
+                <td>{this.props.data.negative_trail[i].ratio}</td>
                 <td><button className={"btn btn-primary"}>Delete</button></td>
             </tr>)
         }
@@ -39,11 +42,10 @@ class Settings extends React.Component
     render_positive_trails = () =>
     {
         let rows = [];
-
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < this.props.data.positive_trail.length; i++) {
             rows.push(<tr>
-                <td>Howo</td>
-                <td>2</td>
+                <td>{this.props.data.positive_trail[i].trailed}</td>
+                <td>{this.props.data.positive_trail[i].ratio}</td>
                 <td><button className={"btn btn-primary"}>Delete</button></td>
             </tr>)
         }
@@ -87,7 +89,7 @@ class Settings extends React.Component
                         </p>
 
                         <Tabs defaultActiveKey="negative_trail" id="modal-tab" transition={false} >
-                            <Tab eventKey="negative_trail" title="Negative_trail" >
+                            <Tab eventKey="negative_trail" title="Negative trail" >
                                 <h5> Negative trails </h5>
                                 <p> Select the accounts you want to follow the votes but in reverse <br /> if you negative trail <b>baduser</b> and <b>baduser</b> votes at 50% on something, you will downvote at <b>50%</b> <br/>
                                     The <b>ratio</b> parameters define how you want to follow the vote, if you set it to <b>0.5</b>  you'll downvote at half the power, if it's <b>2</b> you'll downvote with twice the power
@@ -146,7 +148,8 @@ class Settings extends React.Component
 const mapStateToProps = (state) => {
     return {
         logged_user : state.user,
+        data : state.data,
     };
 };
 
-export default connect(mapStateToProps, {login, fetchLogin})(Settings);
+export default connect(mapStateToProps, {login, fetchLogin, fetchNegativeTrail, fetchPositiveTrail})(Settings);
