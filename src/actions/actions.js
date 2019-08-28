@@ -3,9 +3,11 @@ import Cookies from "universal-cookie";
 import {toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.min.css';
 
+const utils = require("../api/utils");
 var dsteem = require('dsteem');
 
 var client = new dsteem.Client('https://api.steemit.com');
+
 
 
 const fetchLogin = (admin = false) => async (dispatch) => {
@@ -19,12 +21,20 @@ const fetchLogin = (admin = false) => async (dispatch) => {
             {username: cookies.get("username"), token: cookies.get("token"), admin})).data;
 
         if (response.status === "ok") {
+
+            let steem_data = await client.database.getAccounts([cookies.get("username")]);
+
+            steem_data = steem_data[0]
+
             logged_user = {
                 token: cookies.get("token"),
                 username: cookies.get("username"),
                 name: cookies.get("name"),
                 avatar: cookies.get("avatar"),
-                license: ""
+                steem_data : steem_data,
+                voting_power : Math.ceil(utils.getvotingpower(steem_data)*100)/100,
+                downvoting_power : Math.ceil(utils.downvotingpower(steem_data)*100)/100
+
             };
         }
     }
@@ -58,7 +68,10 @@ const login = (data) => async(dispatch) => {
     cookies.set('username', data.name, { path: '/', expires : next_week});
     cookies.set('name',name , { path: '/', expires : next_week});
     cookies.set('avatar',profile_image , { path: '/', expires : next_week});
-    cookies.set('type', data.type , { path: '/', expires : next_week});
+
+
+    let steem_data = await client.database.getAccounts([data.username]);
+
 
     let logged_user = {
         token : data.token,
@@ -66,7 +79,9 @@ const login = (data) => async(dispatch) => {
         name : name,
         avatar: profile_image,
         license : data.license,
-        type : data.type
+        steem_data : steem_data,
+        voting_power : utils.getvotingpower(steem_data),
+        downvoting_power : utils.downvotingpower(steem_data)
     };
 
     dispatch({

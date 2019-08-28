@@ -7,6 +7,7 @@ import {login} from "../actions/actions";
 import {fetchLogin} from "../actions/actions";
 const queryString = require('query-string');
 
+
 class Settings extends React.Component
 {
 
@@ -51,20 +52,19 @@ class Settings extends React.Component
                                     </div>
                                 </li>
                             </ul>
-                            <form className="form-inline my-2 my-lg-0">
-                                <input className="form-control mr-sm-2" type="text" placeholder="Search"
-                                       aria-label="Search"/>
-                                    <button className="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-                            </form>
+
                         </div>
                     </nav>
 
                     <main role="main" className="container">
+                        <h3> Welcome {this.props.logged_user.username}</h3>
+                        <p> Your current voting power is : {this.props.logged_user.voting_power} %</p>
+                        <p> Your current downvoting power is : {this.props.logged_user.downvoting_power} %</p>
+                        <div className="row">
+                            <div className={"col"}>
 
-                        <div className="starter-template">
-                            <h1>Bootstrap starter template</h1>
-                            <p className="lead">Use this document as a way to quickly start any new project.<br/> All you
-                                get is this text and a mostly barebones HTML document.</p>
+                            </div>
+
                         </div>
 
                     </main>
