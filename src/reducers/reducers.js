@@ -85,6 +85,20 @@ const dataReducer = (state  = {negative_trail : "", positive_trail : ""}, action
         let new_state = _.cloneDeep(state);
         new_state.positive_trail = action.payload;
         return new_state
+    }else if (action.type === "ADD_TRAIL")
+    {
+        let new_state = _.cloneDeep(state);
+
+        let trail = action.payload;
+
+        if (trail.positive === 1) {
+            new_state.positive_trail.push(action.payload);
+        } else
+        {
+            new_state.negative_trail.push(action.payload);
+        }
+
+        return new_state
     }
 
     return state;

@@ -8,14 +8,22 @@ import {login} from "../actions/actions";
 import {fetchLogin} from "../actions/actions";
 import {fetchNegativeTrail} from "../actions/actions";
 import {fetchPositiveTrail} from "../actions/actions";
-const queryString = require('query-string');
+import {addToTrail} from "../actions/actions";
+import {toast} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const Joi = require('joi');
 
 class Settings extends React.Component
 {
 
-    state = {vote_threshold : 98, new_n_trail_username : "", new_n_trail_ratio : 1};
+    state = {vote_threshold : 98, trail_username : "", trail_ratio : 1};
+
+
+    trailed_schema = Joi.object().keys({
+        username: Joi.string().min(3).max(16).required(),
+        ratio: Joi.number().integer().min(0.1).max(2.5),
+    });
 
     async componentDidMount() {
         this.props.fetchNegativeTrail(this.props.logged_user.username, this.props.logged_user.token );
@@ -34,7 +42,6 @@ class Settings extends React.Component
             </tr>)
         }
 
-
         return rows
 
     };
@@ -50,9 +57,37 @@ class Settings extends React.Component
             </tr>)
         }
 
-
         return rows
 
+    };
+
+
+    add_positive_trail= () =>
+    {
+
+
+        let test = Joi.validate({username : this.state.trail_username, ratio : this.state.trail_ratio}, this.trailed_schema);
+
+        if (test.error === null) {
+
+            this.props.addToTrail(this.props.logged_user.username, this.props.logged_user.token, this.state.trail_username, this.state.trail_ratio, 1);
+        } else
+        {
+            toast.error(test.error.details[0].message);
+        }
+    };
+
+    add_negative_trail= () =>
+    {
+        let test = Joi.validate({username : this.state.trail_username, ratio : this.state.trail_ratio}, this.trailed_schema);
+
+        if (test.error === null) {
+
+            this.props.addToTrail(this.props.logged_user.username, this.props.logged_user.token, this.state.trail_username, this.state.trail_ratio, -1);
+        } else
+        {
+            toast.error(test.error.details[0].message);
+        }
     };
 
     render() {
@@ -95,7 +130,9 @@ class Settings extends React.Component
                                     The <b>ratio</b> parameters define how you want to follow the vote, if you set it to <b>0.5</b>  you'll downvote at half the power, if it's <b>2</b> you'll downvote with twice the power
                                 </p>
 
-                                <input type={"text"} placeholder={"username"} value={this.state.new_n_trail_username} onChange={(e) => this.setState({new_n_trail_username : e.target.value})}/> <input type={"number"} min={0} max={2.5} step={0.1} style={{width : "60px"}} value={this.state.new_n_trail_ratio} onChange={(e) => this.setState({new_n_trail_ratio : e.target.value})}/> <button className={"btn  btn-primary"}>Add</button>
+                                <input type={"text"} placeholder={"username"} value={this.state.trail_username} onChange={(e) => this.setState({trail_username : e.target.value})}/>
+                                <input type={"number"} min={0} max={2.5} step={0.1} style={{width : "60px"}} value={this.state.trail_ratio} onChange={(e) => this.setState({trail_ratio : e.target.value})}/>
+                                <button className={"btn btn-primary"} onClick={this.add_negative_trail} >Add</button>
 
                                 <table className="table">
                                     <thead>
@@ -115,7 +152,9 @@ class Settings extends React.Component
                                 <p> Select the accounts you want to follow the downvotes  <br /> if you negative trail <b>user</b> and <b>user</b> downvotes at 50% on something, you will downvote at <b>50%</b> <br/>
                                     The <b>ratio</b> parameters define how you want to follow the vote, if you set it to <b>0.5</b>  you'll downvote at half the power, if it's <b>2</b> you'll downvote with twice the power
                                 </p>
-                            <input type={"text"} placeholder={"username"} value={this.state.new_n_trail_username} onChange={(e) => this.setState({new_n_trail_username : e.target.value})}/> <input type={"number"} min={0} max={2.5} step={0.1} style={{width : "60px"}} value={this.state.new_n_trail_ratio} onChange={(e) => this.setState({new_n_trail_ratio : e.target.value})}/> <button className={"btn  btn-primary"}>Add</button>
+                            <input type={"text"} placeholder={"username"} value={this.state.trail_username} onChange={(e) => this.setState({trail_username : e.target.value})}/>
+                            <input type={"number"} min={0} max={2.5} step={0.1} style={{width : "60px"}} value={this.state.trail_ratio} onChange={(e) => this.setState({trail_ratio : e.target.value})}/>
+                            <button className={"btn  btn-primary"} onClick={this.add_positive_trail}>Add</button>
 
                             <table className="table">
                                 <thead>
@@ -152,4 +191,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, {login, fetchLogin, fetchNegativeTrail, fetchPositiveTrail})(Settings);
+export default connect(mapStateToProps, {login, fetchLogin, fetchNegativeTrail, fetchPositiveTrail, addToTrail})(Settings);
