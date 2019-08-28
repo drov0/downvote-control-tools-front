@@ -11,6 +11,7 @@ import {fetchPositiveTrail} from "../actions/actions";
 import {addToTrail} from "../actions/actions";
 import {toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import {removeTrail} from "../actions/actions";
 
 const Joi = require('joi');
 
@@ -31,6 +32,12 @@ class Settings extends React.Component
     }
 
 
+    remove_trail = (trailed, positive) =>
+    {
+            this.props.removeTrail(this.props.logged_user.username, this.props.logged_user.token, trailed, positive);
+    };
+
+
     render_negative_trails = () =>
     {
         let rows = [];
@@ -38,7 +45,7 @@ class Settings extends React.Component
             rows.push(<tr>
                 <td>{this.props.data.negative_trail[i].trailed}</td>
                 <td>{this.props.data.negative_trail[i].ratio}</td>
-                <td><button className={"btn btn-primary"}>Delete</button></td>
+                <td><button className={"btn btn-primary"} onClick={() => this.remove_trail(this.props.data.negative_trail[i].trailed, -1)}>Delete</button></td>
             </tr>)
         }
 
@@ -53,7 +60,7 @@ class Settings extends React.Component
             rows.push(<tr>
                 <td>{this.props.data.positive_trail[i].trailed}</td>
                 <td>{this.props.data.positive_trail[i].ratio}</td>
-                <td><button className={"btn btn-primary"}>Delete</button></td>
+                <td><button className={"btn btn-primary"} onClick={() => this.remove_trail(this.props.data.positive_trail[i].trailed, 1)}>Delete</button></td>
             </tr>)
         }
 
@@ -91,6 +98,7 @@ class Settings extends React.Component
     };
 
     render() {
+
 
 
             return (
@@ -191,4 +199,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, {login, fetchLogin, fetchNegativeTrail, fetchPositiveTrail, addToTrail})(Settings);
+export default connect(mapStateToProps, {login, fetchLogin, fetchNegativeTrail, fetchPositiveTrail, addToTrail, removeTrail})(Settings);

@@ -139,6 +139,21 @@ const addToTrail = (username, token, trailed, ratio, positive) => async (dispatc
         });
     }
 };
+const removeTrail = (username, token, trailed, positive) => async (dispatch) => {
+
+    const response = (await backend.post('/settings/remove_trail',
+        {username: username, token: token, trailed, positive})).data;
+
+    if (response.status === "ok") {
+        return dispatch({
+            type: 'REMOVE_TRAIL',
+            payload: {
+                trailed,
+                positive
+            }
+        });
+    }
+};
 
 
 export {
@@ -147,5 +162,6 @@ export {
     login,
     fetchNegativeTrail,
     fetchPositiveTrail,
-    addToTrail
+    addToTrail,
+    removeTrail
 };

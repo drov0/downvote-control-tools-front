@@ -85,7 +85,7 @@ const dataReducer = (state  = {negative_trail : "", positive_trail : ""}, action
         let new_state = _.cloneDeep(state);
         new_state.positive_trail = action.payload;
         return new_state
-    }else if (action.type === "ADD_TRAIL")
+    } else if (action.type === "ADD_TRAIL")
     {
         let new_state = _.cloneDeep(state);
 
@@ -96,6 +96,19 @@ const dataReducer = (state  = {negative_trail : "", positive_trail : ""}, action
         } else
         {
             new_state.negative_trail.push(action.payload);
+        }
+
+        return new_state
+    }else if (action.type === "REMOVE_TRAIL")
+    {
+        let new_state = _.cloneDeep(state);
+
+        let trail = action.payload;
+
+        if (trail.positive === 1) {
+            new_state.positive_trail = state.positive_trail.filter(el => el.trailed !== trail.trailed);
+        } else {
+            new_state.negative_trail = state.negative_trail.filter(el => el.trailed !== trail.trailed);
         }
 
         return new_state
