@@ -8,7 +8,6 @@ class LoginParking extends React.Component {
 
     login_steemconnect = () =>
     {
-        this.props.displaySignIn(false);
         // TODO : fix produciton url
         window.open(process.env.NODE_ENV ===  "production" ? 'PRODUCTIONURL' : "http://localhost:4002/auth",'',' scrollbars=yes,menubar=no,width=447,height=614, resizable=yes,toolbar=no,location=no,status=no')
     };

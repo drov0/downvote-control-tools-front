@@ -15,7 +15,6 @@ const fetchLogin = (admin = false) => async (dispatch) => {
     let logged_user = "";
     if (cookies.get("name") !== undefined && cookies.get("username") !== undefined && cookies.get("avatar") !== undefined && cookies.get("token") !== undefined)
     {
-
         const response = (await backend.post('/auth/user',
             {username: cookies.get("username"), token: cookies.get("token"), admin})).data;
 

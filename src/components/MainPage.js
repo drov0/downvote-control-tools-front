@@ -3,6 +3,8 @@ import {connect} from "react-redux";
 
 import {} from "../actions/actions"
 import Login from "./Login";
+import {login} from "../actions/actions";
+import {fetchLogin} from "../actions/actions";
 const queryString = require('query-string');
 
 class MainPage extends React.Component
@@ -10,6 +12,7 @@ class MainPage extends React.Component
 
     login_refresh = (event) =>
     {
+
         // TODO : production url
         if (event.origin !== "http://localhost:4002"  && event.origin !== "PRODUCTION")
             return;
@@ -27,13 +30,15 @@ class MainPage extends React.Component
     async componentDidMount() {
         const params = queryString.parse(this.props.location.search);
 
+        this.props.fetchLogin();
+
         window.addEventListener("message", this.login_refresh);
     }
 
 
 
     render() {
-            return (
+        return (
                 <Login/>
             )
     }
@@ -47,4 +52,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, {})(MainPage);
+export default connect(mapStateToProps, {login, fetchLogin})(MainPage);
