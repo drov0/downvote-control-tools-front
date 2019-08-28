@@ -3,9 +3,11 @@ import {connect} from "react-redux";
 
 import {} from "../actions/actions"
 import Login from "./Login";
+import Settings from "./Settings";
 import {login} from "../actions/actions";
 import {fetchLogin} from "../actions/actions";
 const queryString = require('query-string');
+
 
 class MainPage extends React.Component
 {
@@ -38,9 +40,18 @@ class MainPage extends React.Component
 
 
     render() {
-        return (
+
+        if (this.props.logged_user === "") {
+
+            return (
                 <Login/>
             )
+        } else
+        {
+            return (
+                <Settings/>
+            )
+        }
     }
 
 }
