@@ -25,7 +25,7 @@ class Settings extends React.Component
 
     trailed_schema = Joi.object().keys({
         username: Joi.string().min(3).max(16).required(),
-        ratio: Joi.number().integer().min(0.1).max(2.5),
+        ratio: Joi.number().min(0.1).max(2.5),
     });
 
     async componentDidMount() {
@@ -141,7 +141,7 @@ class Settings extends React.Component
                         <Tabs defaultActiveKey="negative_trail" id="modal-tab" transition={false} >
                             <Tab eventKey="negative_trail" title="Negative trail" >
                                 <h5> Negative trails </h5>
-                                <p> Select the accounts you want to follow the votes but in reverse <br /> if you negative trail <b>baduser</b> and <b>baduser</b> votes at 50% on something, you will downvote at <b>50%</b> <br/>
+                                <p> Select the accounts you want to follow the votes but in reverse, this is useful to counter votes.<br /> if you negative trail <b>baduser</b> and <b>baduser</b> votes at 50% on something, you will downvote at <b>50%</b> <br/>
                                     The <b>ratio</b> parameters define how you want to follow the vote, if you set it to <b>0.5</b>  you'll downvote at half the power, if it's <b>2</b> you'll downvote with twice the power
                                 </p>
 
