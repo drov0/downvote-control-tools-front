@@ -168,7 +168,7 @@ class Settings extends React.Component
                                     The <b>ratio</b> parameters define how you want to follow the vote, if you set it to <b>0.5</b>  you'll downvote at half the power, if it's <b>2</b> you'll downvote with twice the power
                                 </p>
                             <input type={"text"} placeholder={"username"} value={this.state.trail_username} onChange={(e) => this.setState({trail_username : e.target.value})}/>
-                            <input type={"number"} min={0} max={2.5} step={0.1} style={{width : "60px"}} value={this.state.trail_ratio} onChange={(e) => this.setState({trail_ratio : e.target.value})}/>
+                            <input type={"number"} min={0} max={2.5} step={0.01} style={{width : "60px"}} value={this.state.trail_ratio} onChange={(e) => this.setState({trail_ratio : e.target.value})}/>
                             <button className={"btn  btn-primary"} onClick={this.add_positive_trail}>Add</button>
 
                             <table className="table">
