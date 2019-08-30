@@ -33,8 +33,8 @@ const fetchLogin = () => async (dispatch) => {
                 avatar: cookies.get("avatar"),
                 steem_data : steem_data,
                 voting_power : Math.ceil(utils.getvotingpower(steem_data)*100)/100,
-                downvoting_power : Math.ceil(utils.downvotingpower(steem_data)*100)/100
-
+                downvoting_power : Math.ceil(utils.downvotingpower(steem_data)*100)/100,
+                threshold : response.threshold
             };
         }
     }
@@ -155,6 +155,28 @@ const removeTrail = (username, token, trailed, positive) => async (dispatch) => 
     }
 };
 
+const saveThreshold = (username, token, threshold) => async (dispatch) => {
+
+    const response = (await backend.post('/settings/update_threshold',
+        {username: username, token: token, threshold})).data;
+
+    if (response.status === "ok") {
+
+        toast.info("Saved");
+
+        return dispatch({
+            type: 'SET_THRESHOLD',
+            payload: threshold
+        });
+    }
+};
+const setThreshold = (threshold) => async (dispatch) => {
+        return dispatch({
+            type: 'SET_THRESHOLD',
+            payload: threshold
+        });
+};
+
 
 export {
 
@@ -163,5 +185,7 @@ export {
     fetchNegativeTrail,
     fetchPositiveTrail,
     addToTrail,
-    removeTrail
+    removeTrail,
+    saveThreshold,
+    setThreshold
 };

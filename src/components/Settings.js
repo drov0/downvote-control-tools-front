@@ -12,13 +12,15 @@ import {addToTrail} from "../actions/actions";
 import {toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import {removeTrail} from "../actions/actions";
+import {saveThreshold} from "../actions/actions";
+import {setThreshold} from "../actions/actions";
 
 const Joi = require('joi');
 
 class Settings extends React.Component
 {
 
-    state = {vote_threshold : 98, trail_username : "", trail_ratio : 1};
+    state = {trail_username : "", trail_ratio : 1};
 
 
     trailed_schema = Joi.object().keys({
@@ -35,6 +37,11 @@ class Settings extends React.Component
     remove_trail = (trailed, positive) =>
     {
             this.props.removeTrail(this.props.logged_user.username, this.props.logged_user.token, trailed, positive);
+    };
+
+    set_threshold = () =>
+    {
+            this.props.saveThreshold(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.threshold);
     };
 
 
@@ -128,7 +135,7 @@ class Settings extends React.Component
                         <h4>Settings : </h4>
 
                         <p>Execute votes when my downvoting power reaches :
-                        <input type={"number"} style={{width : "60px"}} max={100} min={0} value={this.state.vote_threshold} onChange={(e) => this.setState({vote_threshold : e.target.value})}/> %
+                        <input type={"number"} style={{width : "60px"}} max={100} min={0} value={this.props.logged_user.threshold} onChange={(e) => this.props.setThreshold(e.target.value)}/> % <button onClick={this.set_threshold} className={"btn btn-primary"}>Save</button>
                         </p>
 
                         <Tabs defaultActiveKey="negative_trail" id="modal-tab" transition={false} >
@@ -199,4 +206,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, {login, fetchLogin, fetchNegativeTrail, fetchPositiveTrail, addToTrail, removeTrail})(Settings);
+export default connect(mapStateToProps, {login, fetchLogin, fetchNegativeTrail, fetchPositiveTrail, addToTrail, removeTrail, saveThreshold, setThreshold})(Settings);
