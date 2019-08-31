@@ -70,8 +70,9 @@ const login = (data) => async(dispatch) => {
     cookies.set('avatar',profile_image , { path: '/', expires : next_week});
 
 
-    let steem_data = await client.database.getAccounts([data.username]);
+    let steem_data = await client.database.getAccounts([data.name]);
 
+    steem_data = steem_data[0];
 
     let logged_user = {
         token : data.token,
