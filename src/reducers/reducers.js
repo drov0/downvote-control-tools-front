@@ -12,6 +12,9 @@ const userReducer = (state  = "", action) => {
     {
 
         return action.payload;
+    }else if (action.type === "LOGOUT")
+    {
+        return ""
     } else if (action.type === "SET_THRESHOLD" )
     {
         let new_state = _.cloneDeep(state);

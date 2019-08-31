@@ -171,12 +171,34 @@ const saveThreshold = (username, token, threshold) => async (dispatch) => {
         });
     }
 };
+
 const setThreshold = (threshold) => async (dispatch) => {
         return dispatch({
             type: 'SET_THRESHOLD',
             payload: threshold
         });
 };
+
+
+
+
+const logout = (username, token) => async (dispatch) => {
+    const cookies = new Cookies();
+
+
+    cookies.remove("uuid");
+    cookies.remove("username");
+    cookies.remove("name");
+    cookies.remove("avatar");
+
+    await backend.post('/auth/logout', {username: username, token: token});
+
+    dispatch({
+        type: 'LOGOUT',
+        payload: ""
+    });
+};
+
 
 
 export {
@@ -188,5 +210,6 @@ export {
     addToTrail,
     removeTrail,
     saveThreshold,
-    setThreshold
+    setThreshold,
+    logout
 };

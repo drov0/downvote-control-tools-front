@@ -14,6 +14,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import {removeTrail} from "../actions/actions";
 import {saveThreshold} from "../actions/actions";
 import {setThreshold} from "../actions/actions";
+import {logout} from "../actions/actions";
 
 const Joi = require('joi');
 
@@ -104,6 +105,11 @@ class Settings extends React.Component
         }
     };
 
+    logout = () =>
+    {
+        this.props.logout(this.props.logged_user.username, this.props.logged_user.token);
+    };
+
     render() {
 
 
@@ -120,7 +126,7 @@ class Settings extends React.Component
 
                         <div className="collapse navbar-collapse" id="navbarsExampleDefault">
                             <ul className="navbar-nav mr-auto">
-                                <a href={"https://steemit.com/@howo"} target={"_blank"}> A tool by @howo</a>
+                                <a href={"#"} onClick={this.logout}>logout</a>
                             </ul>
 
                         </div>
@@ -206,4 +212,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, {login, fetchLogin, fetchNegativeTrail, fetchPositiveTrail, addToTrail, removeTrail, saveThreshold, setThreshold})(Settings);
+export default connect(mapStateToProps, {login, logout, fetchLogin, fetchNegativeTrail, fetchPositiveTrail, addToTrail, removeTrail, saveThreshold, setThreshold})(Settings);
