@@ -1,4 +1,11 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+This is the front end for the downvote control tool.
+
+if you want to spin this in production, search for the string "https://back.downvotecontrol.com" and replace it with your own domain.
+
+This works locally without having to change anything though.
+
+You'll find more info about this project on the genesis post : 
 
 ## Available Scripts
 
