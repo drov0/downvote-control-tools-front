@@ -122,9 +122,6 @@ const fetchPositiveTrail = (username, token) => async (dispatch) => {
 
 
 const addToTrail = (username, token, trailed, ratio, positive) => async (dispatch) => {
-
-
-
     const response = (await backend.post('/settings/add_trail',
         {username: username, token: token, trailed, ratio, positive})).data;
 
@@ -138,6 +135,12 @@ const addToTrail = (username, token, trailed, ratio, positive) => async (dispatc
                 positive
             }
         });
+    } else
+    {
+        if (response.error === "already exists")
+        {
+            toast.error("This user is already trailed, either in a negative or a normal trail")
+        }
     }
 };
 const removeTrail = (username, token, trailed, positive) => async (dispatch) => {
