@@ -1,5 +1,5 @@
 import React from "react";
-import {fetchComments, fetchLogin, login, setParent} from "../actions/actions"
+import {login} from "../actions/actions"
 import {connect} from "react-redux";
 
 class LoginParking extends React.Component {
@@ -14,21 +14,19 @@ class LoginParking extends React.Component {
 
     render() {
         return (
-            <span>
-                <div className="sidenav">
-                    <div className="login-main-text">
-                        <h2>Login Page</h2>
-                        <p>Login here to access your settings</p>
-                    </div>
-                </div>
-                <div className="main">
-                    <div className="col-md-6 col-sm-12">
+            <div className="wrapper fadeInDown">
+                <div id="formContent">
 
-                            <button type={"button"} className="btn btn-primary " onClick={this.login_steemconnect} style={{backgroundColor : "white", color : "#999999", width : "235px", marginTop : "20px", border : "1px solid #999999", borderRadius : "0"}}>Log in with SteemConnect</button>
-
+                    <div className="fadeIn first">
+                        <img src="./Steem_Symbol_Gradient.png" alt="steem icon" style={{width : "150px"}}/>
                     </div>
+
+                    <button type={"button"} className="btn btn-primary " onClick={this.login_steemconnect} style={{backgroundColor : "white", color : "#999999", width : "235px", marginTop : "20px", border : "1px solid #999999", borderRadius : "0"}}>Log in with SteemConnect</button>
+
+
+
                 </div>
-            </span>
+            </div>
         )
     }
 
