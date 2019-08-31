@@ -7,6 +7,16 @@ This works locally without having to change anything though.
 
 You'll find more info about this project on the genesis post : 
 
+# This is part of a stack 
+
+This should be used along with the bot :
+
+https://github.com/drov0/downvote-control-tool-bot
+
+And the back end :
+
+https://github.com/drov0/downvote-control-tool-back
+
 ## Available Scripts
 
 In the project directory, you can run:
