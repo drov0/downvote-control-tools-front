@@ -83,6 +83,7 @@ class Settings extends React.Component
 
         let test = Joi.validate({username : this.state.trail_username, ratio : this.state.trail_ratio}, this.trailed_schema);
 
+
         if (test.error === null) {
 
             this.props.addToTrail(this.props.logged_user.username, this.props.logged_user.token, this.state.trail_username, this.state.trail_ratio, 1);

@@ -122,6 +122,17 @@ const fetchPositiveTrail = (username, token) => async (dispatch) => {
 
 
 const addToTrail = (username, token, trailed, ratio, positive) => async (dispatch) => {
+
+    let account = await client.database.getAccounts([trailed]);
+
+
+    if (account.length === 0)
+    {
+        toast.error("User "+ trailed + " doesn't exists")
+        return;
+    }
+
+
     const response = (await backend.post('/settings/add_trail',
         {username: username, token: token, trailed, ratio, positive})).data;
 

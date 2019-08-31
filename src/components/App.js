@@ -2,7 +2,9 @@ import React from 'react';
 import { BrowserRouter as Router, Route} from "react-router-dom";
 import MainPage from "./MainPage";
 import { toast } from 'react-toastify';
-toast.configure()
+toast.configure({
+        autoClose: 2500,
+    });
 
 class App extends React.Component
 {
