@@ -131,23 +131,49 @@ class Settings extends React.Component
                     </nav>
 
                     <main role="main" className="container">
-                        <h3> Welcome {this.props.logged_user.username}</h3>
-                        <p> Your current voting power is : {this.props.logged_user.voting_power} % <br/>
-                        Your current downvoting power is : {this.props.logged_user.downvoting_power} %</p>
+                        <h3> Logged in as :  {this.props.logged_user.username}</h3>
+                        <p> Current voting power is : {this.props.logged_user.voting_power} % <br/>
+                            Current downvoting power is : {this.props.logged_user.downvoting_power} %</p>
                         <br/>
 
                         <h4>Settings : </h4>
 
-                        <p>Execute votes when my downvoting power reaches :
+                        <p>Only use automatic downvote votes when power is above :
                         <input type={"number"} style={{width : "60px"}} max={100} min={0} value={this.props.logged_user.threshold} onChange={(e) => this.props.setThreshold(e.target.value)}/> % <button onClick={this.set_threshold} className={"btn btn-primary"}>Save</button>
                         </p>
 
-                        <Tabs defaultActiveKey="negative_trail" id="modal-tab" transition={false} >
+                        <Tabs defaultActiveKey="trail" id="modal-tab" transition={false} >
+
+                            <Tab eventKey="trail" title="Trail" >
+                                <h5> Follow downvote trail </h5>
+                                <p> Allows you to trail the downvotes of a specific account and thus downvote any content they downvote at a given rate relative to the size of their downvote.</p>
+                                <p>Example: If you choose to trail <b>@abuse.control</b> with rating 0.75, then if  <b>@abuse.control</b> gives a <b>50%</b> downvote to a post you will give the same post a <b>25%</b> downvote.</p>
+
+
+                                <input type={"text"} placeholder={"username"} value={this.state.trail_username} onChange={(e) => this.setState({trail_username : e.target.value})}/>
+                                <input type={"number"} min={0} max={2.5} step={0.01} style={{width : "60px"}} value={this.state.trail_ratio} onChange={(e) => this.setState({trail_ratio : e.target.value})}/>
+                                <button className={"btn  btn-primary"} onClick={this.add_positive_trail}>Add</button>
+
+                                <table className="table">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">Username</th>
+                                        <th scope="col">Ratio</th>
+                                        <th scope="col">Delete</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {this.render_positive_trails()}
+
+                                    </tbody>
+                                </table>
+
+                            </Tab>
+
                             <Tab eventKey="negative_trail" title="Negative trail" >
-                                <h5> Negative trails </h5>
-                                <p> Select the accounts you want to follow the votes but in reverse, this is useful to counter votes.<br /> if you negative trail <b>baduser</b> and <b>baduser</b> votes at 50% on something, you will downvote at <b>50%</b> <br/>
-                                    The <b>ratio</b> parameters define how you want to follow the vote, if you set it to <b>0.5</b>  you'll downvote at half the power, if it's <b>2</b> you'll downvote with twice the power
-                                </p>
+                                <h5> Counter upvotes </h5>
+                                <p> Used to counteract upvotes from specified accounts, meaning that you will downvote anything that they choose to upvote at a given rate relative to their upvote. </p>
+                                <p>Example: If you choose to counter upvote <b>@baduser</b>r with rating 1.2, then if <b>@baduser</b> gives a 50% upvote to something, you will add a <b>60%</b> downvote to the same post or comment, while a rating of 0.5 would make you downvote <b>25%</b>, etc.</p>
 
                                 <input type={"text"} placeholder={"username"} value={this.state.trail_username} onChange={(e) => this.setState({trail_username : e.target.value})}/>
                                 <input type={"number"} min={0} max={2.5} step={0.1} style={{width : "60px"}} value={this.state.trail_ratio} onChange={(e) => this.setState({trail_ratio : e.target.value})}/>
@@ -166,30 +192,8 @@ class Settings extends React.Component
 
                                     </tbody>
                                 </table>
-                            </Tab><Tab eventKey=" trail" title="Trail" >
-                                <h5> Trail : </h5>
-                                <p> Select the accounts you want to follow the downvotes  <br /> if you negative trail <b>user</b> and <b>user</b> downvotes at 50% on something, you will downvote at <b>50%</b> <br/>
-                                    The <b>ratio</b> parameters define how you want to follow the vote, if you set it to <b>0.5</b>  you'll downvote at half the power, if it's <b>2</b> you'll downvote with twice the power
-                                </p>
-                            <input type={"text"} placeholder={"username"} value={this.state.trail_username} onChange={(e) => this.setState({trail_username : e.target.value})}/>
-                            <input type={"number"} min={0} max={2.5} step={0.01} style={{width : "60px"}} value={this.state.trail_ratio} onChange={(e) => this.setState({trail_ratio : e.target.value})}/>
-                            <button className={"btn  btn-primary"} onClick={this.add_positive_trail}>Add</button>
-
-                            <table className="table">
-                                <thead>
-                                <tr>
-                                    <th scope="col">Username</th>
-                                    <th scope="col">Ratio</th>
-                                    <th scope="col">Delete</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {this.render_positive_trails()}
-
-                                </tbody>
-                            </table>
-
                             </Tab>
+
 
                         </Tabs>
 
