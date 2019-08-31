@@ -14,9 +14,7 @@ class MainPage extends React.Component
 
     login_refresh = (event) =>
     {
-
-        // TODO : production url
-        if (event.origin !== "http://localhost:4002"  && event.origin !== "PRODUCTION")
+        if (event.origin !== "http://localhost:4002"  && event.origin !== "https://back.downvotecontrol.com")
             return;
 
         let data = {};
