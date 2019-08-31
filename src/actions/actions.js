@@ -81,8 +81,8 @@ const login = (data) => async(dispatch) => {
         avatar: profile_image,
         license : data.license,
         steem_data : steem_data,
-        voting_power : utils.getvotingpower(steem_data),
-        downvoting_power : utils.downvotingpower(steem_data)
+        voting_power : Math.ceil(utils.getvotingpower(steem_data)*100)/100,
+        downvoting_power : Math.ceil(utils.downvotingpower(steem_data)*100)/100,
     };
 
     dispatch({
