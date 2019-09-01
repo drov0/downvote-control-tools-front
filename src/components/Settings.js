@@ -147,7 +147,7 @@ class Settings extends React.Component
                             <Tab eventKey="trail" title="Trail" >
                                 <h5> Follow downvote trail </h5>
                                 <p> Allows you to trail the downvotes of a specific account and thus downvote any content they downvote at a given rate relative to the size of their downvote.</p>
-                                <p>Example: If you choose to trail <b>@abuse.control</b> with rating 0.75, then if  <b>@abuse.control</b> gives a <b>50%</b> downvote to a post you will give the same post a <b>25%</b> downvote.</p>
+                                <p>Example: If you choose to trail <b>@abuse.control</b> with rating 0.75, then if  <b>@abuse.control</b> gives a <b>50%</b> downvote to a post you will give the same post a <b>37.5%</b> downvote.</p>
 
 
                                 <input type={"text"} placeholder={"username"} value={this.state.trail_username} onChange={(e) => this.setState({trail_username : e.target.value})}/>
