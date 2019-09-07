@@ -15,7 +15,7 @@ const fetchLogin = () => async (dispatch) => {
     const cookies = new Cookies();
 
     let logged_user = "";
-    if (cookies.get("name") !== undefined && cookies.get("username") !== undefined && cookies.get("avatar") !== undefined && cookies.get("token") !== undefined)
+    if (cookies.get("username") !== undefined && cookies.get("token") !== undefined)
     {
         const response = (await backend.post('/auth/user',
             {username: cookies.get("username"), token: cookies.get("token")})).data;
@@ -24,13 +24,11 @@ const fetchLogin = () => async (dispatch) => {
 
             let steem_data = await client.database.getAccounts([cookies.get("username")]);
 
-            steem_data = steem_data[0]
+            steem_data = steem_data[0];
 
             logged_user = {
-                token: cookies.get("token"),
                 username: cookies.get("username"),
-                name: cookies.get("name"),
-                avatar: cookies.get("avatar"),
+                token: cookies.get("token"),
                 steem_data : steem_data,
                 voting_power : Math.ceil(utils.getvotingpower(steem_data)*100)/100,
                 downvoting_power : Math.ceil(utils.downvotingpower(steem_data)*100)/100,
@@ -38,7 +36,6 @@ const fetchLogin = () => async (dispatch) => {
             };
         }
     }
-
 
     dispatch({
         type: 'FETCH_LOGIN',
@@ -56,33 +53,23 @@ const login = (data) => async(dispatch) => {
     next_week.setDate(next_week.getDate() + 14);
 
     let name = data.name;
-    let profile_image = "./img/default.png";
+    let profile_image = "https://steemitimages.com/u/"+name+"/avatar";
 
-    if (data.json_metadata.profile !== undefined && data.json_metadata.profile.name !== undefined && data.json_metadata.profile.profile_image !== undefined)
-    {
-        name = data.json_metadata.profile.name;
-        profile_image = data.json_metadata.profile.profile_image
-    }
-
+    cookies.set('username', data.username, { path: '/', expires : next_week});
     cookies.set('token', data.token, { path: '/', expires : next_week});
-    cookies.set('username', data.name, { path: '/', expires : next_week});
-    cookies.set('name',name , { path: '/', expires : next_week});
-    cookies.set('avatar',profile_image , { path: '/', expires : next_week});
 
-
-    let steem_data = await client.database.getAccounts([data.name]);
+    let steem_data = await client.database.getAccounts([data.username]);
 
     steem_data = steem_data[0];
 
     let logged_user = {
+        username : data.username,
         token : data.token,
-        username : data.name,
-        name : name,
         avatar: profile_image,
-        license : data.license,
         steem_data : steem_data,
         voting_power : Math.ceil(utils.getvotingpower(steem_data)*100)/100,
         downvoting_power : Math.ceil(utils.downvotingpower(steem_data)*100)/100,
+        threshold : data.threshold
     };
 
     dispatch({
