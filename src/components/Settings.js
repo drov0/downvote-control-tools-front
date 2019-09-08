@@ -15,6 +15,8 @@ import {removeTrail} from "../actions/actions";
 import {saveThreshold} from "../actions/actions";
 import {setThreshold} from "../actions/actions";
 import {logout} from "../actions/actions";
+import {setMinPayout} from "../actions/actions";
+import {saveMinPayout} from "../actions/actions";
 
 const Joi = require('joi');
 
@@ -43,6 +45,11 @@ class Settings extends React.Component
     set_threshold = () =>
     {
             this.props.saveThreshold(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.threshold);
+    };
+
+    save_min_payout = () =>
+    {
+            this.props.saveMinPayout(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.min_payout);
     };
 
 
@@ -136,10 +143,16 @@ class Settings extends React.Component
                             Current downvoting power is : {this.props.logged_user.downvoting_power} %</p>
                         <br/>
 
-                        <h4>Settings : </h4>
+                        <h4>Global settings : </h4>
 
                         <p>Only use automatic downvote votes when power is above :
                         <input type={"number"} style={{width : "60px"}} max={100} min={0} value={this.props.logged_user.threshold} onChange={(e) => this.props.setThreshold(e.target.value)}/> % <button onClick={this.set_threshold} className={"btn btn-primary"}>Save</button>
+                        </p>
+
+                        <p>Only downvote if the post has more than  :
+                        <input type={"number"} style={{width : "60px"}} min={0} value={this.props.logged_user.min_payout} onChange={(e) => this.props.setMinPayout(e.target.value)}/>
+                        $ of pending payouts.
+                            <button onClick={this.save_min_payout} className={"btn btn-primary"}>Save</button>
                         </p>
 
                         <Tabs defaultActiveKey="trail" id="modal-tab" transition={false} >
@@ -170,7 +183,7 @@ class Settings extends React.Component
 
                             </Tab>
 
-                            <Tab eventKey="negative_trail" title="Negative trail" >
+                            <Tab eventKey="counter_upvotes" title="Counter upvotes " >
                                 <h5> Counter upvotes </h5>
                                 <p> Used to counteract upvotes from specified accounts, meaning that you will downvote anything that they choose to upvote at a given rate relative to their upvote. </p>
                                 <p>Example: If you choose to counter upvote <b>@baduser</b>r with rating 1.2, then if <b>@baduser</b> gives a 50% upvote to something, you will add a <b>60%</b> downvote to the same post or comment, while a rating of 0.5 would make you downvote <b>25%</b>, etc.</p>
@@ -193,11 +206,7 @@ class Settings extends React.Component
                                     </tbody>
                                 </table>
                             </Tab>
-
-
                         </Tabs>
-
-
                     </main>
                 </div>
             )
@@ -214,4 +223,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, {login, logout, fetchLogin, fetchNegativeTrail, fetchPositiveTrail, addToTrail, removeTrail, saveThreshold, setThreshold})(Settings);
+export default connect(mapStateToProps, {login, logout, fetchLogin, fetchNegativeTrail, fetchPositiveTrail, addToTrail, removeTrail, saveThreshold, setThreshold, setMinPayout, saveMinPayout})(Settings);

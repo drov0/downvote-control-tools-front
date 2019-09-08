@@ -6,7 +6,6 @@ const userReducer = (state  = "", action) => {
 
     if (action.type === "LOGIN")
     {
-
         return action.payload;
     } else if (action.type === "FETCH_LOGIN" )
     {
@@ -20,6 +19,12 @@ const userReducer = (state  = "", action) => {
         let new_state = _.cloneDeep(state);
 
         new_state.threshold = action.payload;
+        return new_state
+    } else if (action.type === "SET_PAYOUT" )
+    {
+        let new_state = _.cloneDeep(state);
+
+        new_state.min_payout = action.payload;
         return new_state
     }
 
