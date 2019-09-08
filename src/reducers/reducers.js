@@ -20,6 +20,12 @@ const userReducer = (state  = "", action) => {
 
         new_state.threshold = action.payload;
         return new_state
+    } else if (action.type === "SET_PAYOUT" )
+    {
+        let new_state = _.cloneDeep(state);
+
+        new_state.min_payout = action.payload;
+        return new_state
     }
 
     return state;

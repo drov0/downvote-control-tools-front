@@ -32,7 +32,8 @@ const fetchLogin = () => async (dispatch) => {
                 steem_data : steem_data,
                 voting_power : Math.ceil(utils.getvotingpower(steem_data)*100)/100,
                 downvoting_power : Math.ceil(utils.downvotingpower(steem_data)*100)/100,
-                threshold : response.threshold
+                threshold : response.threshold,
+                min_payout : response.min_payout
             };
         }
     }
@@ -69,7 +70,8 @@ const login = (data) => async(dispatch) => {
         steem_data : steem_data,
         voting_power : Math.ceil(utils.getvotingpower(steem_data)*100)/100,
         downvoting_power : Math.ceil(utils.downvotingpower(steem_data)*100)/100,
-        threshold : data.threshold
+        threshold : data.threshold,
+        min_payout : data.min_payout
     };
 
     dispatch({
@@ -180,12 +182,35 @@ const setThreshold = (threshold) => async (dispatch) => {
         });
 };
 
+const setMinPayout = (payout) => async (dispatch) => {
+        return dispatch({
+            type: 'SET_PAYOUT',
+            payload: payout
+        });
+};
+
+
+const saveMinPayout = (username, token, payout) => async (dispatch) => {
+
+    const response = (await backend.post('/settings/update_min_payout',
+        {username: username, token: token, min_payout : payout})).data;
+
+    if (response.status === "ok") {
+
+        toast.info("Saved");
+
+        return dispatch({
+            type: 'SET_PAYOUT',
+            payload: payout
+        });
+    }
+};
+
 
 
 
 const logout = (username, token) => async (dispatch) => {
     const cookies = new Cookies();
-
 
     cookies.remove("uuid");
     cookies.remove("username");
@@ -212,5 +237,8 @@ export {
     removeTrail,
     saveThreshold,
     setThreshold,
-    logout
+    logout,
+    setMinPayout,
+    saveMinPayout,
+
 };
