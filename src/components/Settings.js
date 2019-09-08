@@ -153,7 +153,9 @@ class Settings extends React.Component
                         <input type={"number"} style={{width : "60px"}} min={0} value={this.props.logged_user.min_payout} onChange={(e) => this.props.setMinPayout(e.target.value)}/>
                         $ of pending payouts.
                             <button onClick={this.save_min_payout} className={"btn btn-primary"}>Save</button>
+                        <br/><small>Posts with 0$ payout won't be downvoted</small>
                         </p>
+                        <br/>
 
                         <Tabs defaultActiveKey="trail" id="modal-tab" transition={false} >
 
@@ -161,7 +163,6 @@ class Settings extends React.Component
                                 <h5> Follow downvote trail </h5>
                                 <p> Allows you to trail the downvotes of a specific account and thus downvote any content they downvote at a given rate relative to the size of their downvote.</p>
                                 <p>Example: If you choose to trail <b>@abuse.control</b> with rating 0.75, then if  <b>@abuse.control</b> gives a <b>50%</b> downvote to a post you will give the same post a <b>37.5%</b> downvote.</p>
-
 
                                 <input type={"text"} placeholder={"username"} value={this.state.trail_username} onChange={(e) => this.setState({trail_username : e.target.value})}/>
                                 <input type={"number"} min={0} max={2.5} step={0.01} style={{width : "60px"}} value={this.state.trail_ratio} onChange={(e) => this.setState({trail_ratio : e.target.value})}/>
