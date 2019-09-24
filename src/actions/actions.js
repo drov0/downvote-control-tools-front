@@ -15,10 +15,10 @@ const fetchLogin = () => async (dispatch) => {
     const cookies = new Cookies();
 
     let logged_user = "";
-    if (cookies.get("username") !== undefined && cookies.get("token") !== undefined)
+    if (cookies.get("username") !== undefined && cookies.get("token") !== undefined && cookies.get("type") !== undefined)
     {
         const response = (await backend.post('/auth/user',
-            {username: cookies.get("username"), token: cookies.get("token")})).data;
+            {username: cookies.get("username"), token: cookies.get("token"), type : cookies.get("type")})).data;
 
         if (response.status === "ok") {
 
@@ -33,7 +33,9 @@ const fetchLogin = () => async (dispatch) => {
                 voting_power : Math.ceil(utils.getvotingpower(steem_data)*100)/100,
                 downvoting_power : Math.ceil(utils.downvotingpower(steem_data)*100)/100,
                 threshold : response.threshold,
-                min_payout : response.min_payout
+                min_payout : response.min_payout,
+                type: cookies.get("type"),
+
             };
         }
     }
@@ -209,20 +211,67 @@ const saveMinPayout = (username, token, payout) => async (dispatch) => {
 
 
 
-const logout = (username, token) => async (dispatch) => {
+const logout = (username, token, type) => async (dispatch) => {
     const cookies = new Cookies();
 
-    cookies.remove("uuid");
+    cookies.remove("login");
     cookies.remove("username");
-    cookies.remove("name");
-    cookies.remove("avatar");
+    cookies.remove("token");
 
-    await backend.post('/auth/logout', {username: username, token: token});
+    await backend.post('/auth/logout', {username: username, token: token, type : type});
 
     dispatch({
         type: 'LOGOUT',
         payload: ""
     });
+};
+
+
+
+const login_keychain = (username, encrypted_username) => async (dispatch) => {
+
+    let data = (await backend.post('/auth/keychain/login', {username, encrypted_username})).data;
+
+    if (data.status === "ok")
+    {
+        data = data.account;
+
+        const cookies = new Cookies();
+
+        let next_week = new Date();
+
+        next_week.setDate(next_week.getDate() + 14);
+
+        let profile_image = "https://steemitimages.com/u/"+username+"/avatar";
+
+        cookies.set('username', data.username, { path: '/', expires : next_week});
+        cookies.set('token', data.token, { path: '/', expires : next_week});
+        cookies.set('type', "keychain", { path: '/', expires : next_week});
+
+        let steem_data = await client.database.getAccounts([username]);
+
+        steem_data = steem_data[0];
+
+        let logged_user = {
+            username : username,
+            token : data.token,
+            avatar: profile_image,
+            steem_data : steem_data,
+            voting_power : Math.ceil(utils.getvotingpower(steem_data)*100)/100,
+            downvoting_power : Math.ceil(utils.downvotingpower(steem_data)*100)/100,
+            threshold : data.threshold,
+            min_payout : data.min_payout,
+            type : "keychain"
+        };
+
+        dispatch({
+            type: 'LOGIN',
+            payload: logged_user
+        });
+    }
+
+
+
 };
 
 
@@ -240,5 +289,6 @@ export {
     logout,
     setMinPayout,
     saveMinPayout,
+    login_keychain
 
 };

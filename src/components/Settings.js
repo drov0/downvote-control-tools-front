@@ -115,7 +115,7 @@ class Settings extends React.Component
 
     logout = () =>
     {
-        this.props.logout(this.props.logged_user.username, this.props.logged_user.token);
+        this.props.logout(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type);
     };
 
     render() {
