@@ -46,8 +46,6 @@ class LoginParking extends React.Component {
                 {
                     this.props.login_keychain(this.state.username, response.result);
                 }
-
-
             });
         } else
         {
@@ -63,10 +61,6 @@ class LoginParking extends React.Component {
 
 
             let keychain = window.steem_keychain;
-
-            /*keychain.requestRemoveAccountAuthority(this.state.username, "downvote-tool", "posting", function(response) {
-                console.log(response);
-            });*/
 
             let data = await this.client.database.getAccounts([this.state.username]);
             if (data.length === 1) {
@@ -88,8 +82,6 @@ class LoginParking extends React.Component {
             {
                 this.setState({error : "Steem user not found"});
             }
-
-
         } else {
             this.setState({error : "You do not have steem keychain installed"});
         }
@@ -98,9 +90,6 @@ class LoginParking extends React.Component {
     render() {
 
         if (this.state.loginType === "") {
-
-
-
             return (
                 <div className="wrapper fadeInDown">
                     <div id="formContent">

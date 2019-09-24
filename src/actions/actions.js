@@ -85,10 +85,10 @@ const login = (data) => async(dispatch) => {
 
 
 
-const fetchNegativeTrail = (username, token) => async (dispatch) => {
+const fetchNegativeTrail = (username, token, type) => async (dispatch) => {
 
         const response = (await backend.post('/settings/get_trail',
-            {username: username, token: token, positive : -1})).data;
+            {username: username, token: token, type: type, positive : -1})).data;
 
         if (response.status === "ok") {
            return dispatch({
@@ -98,10 +98,10 @@ const fetchNegativeTrail = (username, token) => async (dispatch) => {
         }
 };
 
-const fetchPositiveTrail = (username, token) => async (dispatch) => {
+const fetchPositiveTrail = (username, token, type) => async (dispatch) => {
 
         const response = (await backend.post('/settings/get_trail',
-            {username: username, token: token, positive : 1})).data;
+            {username: username, token: token, type: type, positive : 1})).data;
 
         if (response.status === "ok") {
            return dispatch({
@@ -112,7 +112,7 @@ const fetchPositiveTrail = (username, token) => async (dispatch) => {
 };
 
 
-const addToTrail = (username, token, trailed, ratio, positive) => async (dispatch) => {
+const addToTrail = (username, token, type,  trailed, ratio, positive) => async (dispatch) => {
 
     let account = await client.database.getAccounts([trailed]);
 
@@ -125,7 +125,7 @@ const addToTrail = (username, token, trailed, ratio, positive) => async (dispatc
 
 
     const response = (await backend.post('/settings/add_trail',
-        {username: username, token: token, trailed, ratio, positive})).data;
+        {username: username, token: token, type, trailed, ratio, positive})).data;
 
     if (response.status === "ok") {
         return dispatch({
@@ -145,10 +145,10 @@ const addToTrail = (username, token, trailed, ratio, positive) => async (dispatc
         }
     }
 };
-const removeTrail = (username, token, trailed, positive) => async (dispatch) => {
+const removeTrail = (username, token, type, trailed, positive) => async (dispatch) => {
 
     const response = (await backend.post('/settings/remove_trail',
-        {username: username, token: token, trailed, positive})).data;
+        {username: username, token: token, type, trailed, positive})).data;
 
     if (response.status === "ok") {
         return dispatch({
@@ -161,10 +161,10 @@ const removeTrail = (username, token, trailed, positive) => async (dispatch) => 
     }
 };
 
-const saveThreshold = (username, token, threshold) => async (dispatch) => {
+const saveThreshold = (username, token, type,  threshold) => async (dispatch) => {
 
     const response = (await backend.post('/settings/update_threshold',
-        {username: username, token: token, threshold})).data;
+        {username, token, type, threshold})).data;
 
     if (response.status === "ok") {
 
@@ -176,6 +176,25 @@ const saveThreshold = (username, token, threshold) => async (dispatch) => {
         });
     }
 };
+
+
+const saveMinPayout = (username, token, type,  min_payout) => async (dispatch) => {
+
+    const response = (await backend.post('/settings/update_min_payout',
+        {username, token, type, min_payout})).data;
+
+    if (response.status === "ok") {
+
+        toast.info("Saved");
+
+        return dispatch({
+            type: 'SET_PAYOUT',
+            payload: min_payout
+        });
+    }
+};
+
+
 
 const setThreshold = (threshold) => async (dispatch) => {
         return dispatch({
@@ -189,23 +208,6 @@ const setMinPayout = (payout) => async (dispatch) => {
             type: 'SET_PAYOUT',
             payload: payout
         });
-};
-
-
-const saveMinPayout = (username, token, payout) => async (dispatch) => {
-
-    const response = (await backend.post('/settings/update_min_payout',
-        {username: username, token: token, min_payout : payout})).data;
-
-    if (response.status === "ok") {
-
-        toast.info("Saved");
-
-        return dispatch({
-            type: 'SET_PAYOUT',
-            payload: payout
-        });
-    }
 };
 
 

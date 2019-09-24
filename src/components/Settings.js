@@ -32,24 +32,24 @@ class Settings extends React.Component
     });
 
     async componentDidMount() {
-        this.props.fetchNegativeTrail(this.props.logged_user.username, this.props.logged_user.token );
-        this.props.fetchPositiveTrail(this.props.logged_user.username, this.props.logged_user.token );
+        this.props.fetchNegativeTrail(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type);
+        this.props.fetchPositiveTrail(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type);
     }
 
 
     remove_trail = (trailed, positive) =>
     {
-            this.props.removeTrail(this.props.logged_user.username, this.props.logged_user.token, trailed, positive);
+            this.props.removeTrail(this.props.logged_user.username, this.props.logged_user.token,this.props.logged_user.type, trailed, positive);
     };
 
     set_threshold = () =>
     {
-            this.props.saveThreshold(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.threshold);
+            this.props.saveThreshold(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type,  this.props.logged_user.threshold);
     };
 
     save_min_payout = () =>
     {
-            this.props.saveMinPayout(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.min_payout);
+            this.props.saveMinPayout(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type, this.props.logged_user.min_payout);
     };
 
 
@@ -93,7 +93,7 @@ class Settings extends React.Component
 
         if (test.error === null) {
 
-            this.props.addToTrail(this.props.logged_user.username, this.props.logged_user.token, this.state.trail_username, this.state.trail_ratio, 1);
+            this.props.addToTrail(this.props.logged_user.username, this.props.logged_user.token,this.props.logged_user.type, this.state.trail_username, this.state.trail_ratio, 1);
         } else
         {
             toast.error(test.error.details[0].message);
@@ -106,7 +106,7 @@ class Settings extends React.Component
 
         if (test.error === null) {
 
-            this.props.addToTrail(this.props.logged_user.username, this.props.logged_user.token, this.state.trail_username, this.state.trail_ratio, -1);
+            this.props.addToTrail(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type, this.state.trail_username, this.state.trail_ratio, -1);
         } else
         {
             toast.error(test.error.details[0].message);
