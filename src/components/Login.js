@@ -58,14 +58,12 @@ class LoginParking extends React.Component {
     {
 
         if(window.steem_keychain) {
-
-
             let keychain = window.steem_keychain;
 
             let data = await this.client.database.getAccounts([this.state.username]);
             if (data.length === 1) {
 
-                let auth = data[0].posting.account_auths.filter(el => el[0] === "downvote-tool")
+                let auth = data[0].posting.account_auths.filter(el => el[0] === "downvote-tool");
 
                 if (auth.length === 0) {
 
@@ -75,9 +73,9 @@ class LoginParking extends React.Component {
                         else
                             this.setState({error : "Keychain error"});
                     });
+                } else {
+                    this.send_login_token();
                 }
-
-                this.send_login_token();
             } else
             {
                 this.setState({error : "Steem user not found"});
