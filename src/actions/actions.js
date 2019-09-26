@@ -84,37 +84,21 @@ const login = (data) => async(dispatch) => {
     });
 };
 
-
-
-
-const fetchNegativeTrail = (username, token, type) => async (dispatch) => {
+const fetchTrails = (username, token, type) => async (dispatch) => {
 
         const response = (await backend.post('/settings/get_trail',
-            {username: username, token: token, type: type, positive : -1})).data;
+            {username: username, token: token, type: type})).data;
 
         if (response.status === "ok") {
            return dispatch({
-                type: 'FETCH_NEGATIVE_TRAIL',
-                payload: response.data
-            });
-        }
-};
-
-const fetchPositiveTrail = (username, token, type) => async (dispatch) => {
-
-        const response = (await backend.post('/settings/get_trail',
-            {username: username, token: token, type: type, positive : 1})).data;
-
-        if (response.status === "ok") {
-           return dispatch({
-                type: 'FETCH_POSITIVE_TRAIL',
+                type: 'FETCH_TRAILS',
                 payload: response.data
             });
         }
 };
 
 
-const addToTrail = (username, token, type,  trailed, ratio, positive) => async (dispatch) => {
+const addToTrail = (username, token, type,  trailed, ratio, trail_type) => async (dispatch) => {
 
     let account = await client.database.getAccounts([trailed]);
 
@@ -125,7 +109,7 @@ const addToTrail = (username, token, type,  trailed, ratio, positive) => async (
     }
 
     const response = (await backend.post('/settings/add_trail',
-        {username: username, token: token, type, trailed, ratio, positive})).data;
+        {username: username, token: token, type, trailed, ratio, trail_type})).data;
 
     if (response.status === "ok") {
         return dispatch({
@@ -134,7 +118,7 @@ const addToTrail = (username, token, type,  trailed, ratio, positive) => async (
                 username,
                 trailed,
                 ratio,
-                positive
+                trail_type
             }
         });
     } else
@@ -145,17 +129,17 @@ const addToTrail = (username, token, type,  trailed, ratio, positive) => async (
         }
     }
 };
-const removeTrail = (username, token, type, trailed, positive) => async (dispatch) => {
+const removeTrail = (username, token, type, trailed, trail_type) => async (dispatch) => {
 
     const response = (await backend.post('/settings/remove_trail',
-        {username: username, token: token, type, trailed, positive})).data;
+        {username: username, token: token, type, trailed, trail_type})).data;
 
     if (response.status === "ok") {
         return dispatch({
             type: 'REMOVE_TRAIL',
             payload: {
                 trailed,
-                positive
+                trail_type
             }
         });
     }
@@ -282,8 +266,7 @@ export {
 
     fetchLogin,
     login,
-    fetchNegativeTrail,
-    fetchPositiveTrail,
+    fetchTrails,
     addToTrail,
     removeTrail,
     saveThreshold,

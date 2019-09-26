@@ -26,7 +26,6 @@ class MainPage extends React.Component
         }
     };
 
-
     async componentDidMount() {
         const params = queryString.parse(this.props.location.search);
 
@@ -34,8 +33,6 @@ class MainPage extends React.Component
 
         window.addEventListener("message", this.login_refresh);
     }
-
-
 
     render() {
 
@@ -53,7 +50,6 @@ class MainPage extends React.Component
     }
 
 }
-
 
 const mapStateToProps = (state) => {
     return {

@@ -6,8 +6,7 @@ import {} from "../actions/actions"
 import Login from "./Login";
 import {login} from "../actions/actions";
 import {fetchLogin} from "../actions/actions";
-import {fetchNegativeTrail} from "../actions/actions";
-import {fetchPositiveTrail} from "../actions/actions";
+import {fetchTrails} from "../actions/actions";
 import {addToTrail} from "../actions/actions";
 import {toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
@@ -32,9 +31,8 @@ class Settings extends React.Component
     });
 
     async componentDidMount() {
-        this.props.fetchNegativeTrail(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type);
-        this.props.fetchPositiveTrail(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type);
-    }
+        this.props.fetchTrails(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type);
+    }fetchTrails
 
 
     remove_trail = (trailed, positive) =>
@@ -224,4 +222,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, {login, logout, fetchLogin, fetchNegativeTrail, fetchPositiveTrail, addToTrail, removeTrail, saveThreshold, setThreshold, setMinPayout, saveMinPayout})(Settings);
+export default connect(mapStateToProps, {login, logout, fetchLogin, fetchTrails, addToTrail, removeTrail, saveThreshold, setThreshold, setMinPayout, saveMinPayout})(Settings);
