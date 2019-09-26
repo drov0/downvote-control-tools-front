@@ -60,6 +60,7 @@ const login = (data) => async(dispatch) => {
 
     cookies.set('username', data.username, { path: '/', expires : next_week});
     cookies.set('token', data.token, { path: '/', expires : next_week});
+    cookies.set('type', "steemconnect", { path: '/', expires : next_week});
 
     let steem_data = await client.database.getAccounts([data.username]);
 
@@ -73,7 +74,8 @@ const login = (data) => async(dispatch) => {
         voting_power : Math.ceil(utils.getvotingpower(steem_data)*100)/100,
         downvoting_power : Math.ceil(utils.downvotingpower(steem_data)*100)/100,
         threshold : data.threshold,
-        min_payout : data.min_payout
+        min_payout : data.min_payout,
+        type: "steemconnect"
     };
 
     dispatch({
