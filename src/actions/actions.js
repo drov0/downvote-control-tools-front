@@ -97,6 +97,19 @@ const fetchTrails = (username, token, type) => async (dispatch) => {
         }
 };
 
+const fetchWhitelist = (username, token, type) => async (dispatch) => {
+
+        const response = (await backend.post('/settings/get_whitelist',
+            {username: username, token: token, type: type})).data;
+
+        if (response.status === "ok") {
+           return dispatch({
+                type: 'FETCH_WHITELIST',
+                payload: response.data
+            });
+        }
+};
+
 
 const addToTrail = (username, token, type,  trailed, ratio, trail_type) => async (dispatch) => {
 
@@ -129,6 +142,37 @@ const addToTrail = (username, token, type,  trailed, ratio, trail_type) => async
         }
     }
 };
+
+const addToWhitelist = (username, token, type, trailed) => async (dispatch) => {
+    let account = await client.database.getAccounts([trailed]);
+
+    if (account.length === 0)
+    {
+        toast.error("User "+ trailed + " doesn't exists");
+        return;
+    }
+
+    const response = (await backend.post('/settings/add_whitelist',
+        {username: username, token: token, type, trailed})).data;
+
+    if (response.status === "ok") {
+        return dispatch({
+            type: 'ADD_WHITELIST',
+            payload: {
+                username,
+                trailed
+            }
+        });
+    } else
+    {
+        if (response.error === "already exists")
+        {
+            toast.error("This user is already in the whitelist")
+        }
+    }
+};
+
+
 const removeTrail = (username, token, type, trailed, trail_type) => async (dispatch) => {
 
     const response = (await backend.post('/settings/remove_trail',
@@ -140,6 +184,21 @@ const removeTrail = (username, token, type, trailed, trail_type) => async (dispa
             payload: {
                 trailed,
                 trail_type
+            }
+        });
+    }
+};
+
+const removeWhitelist = (username, token, type, trailed) => async (dispatch) => {
+
+    const response = (await backend.post('/settings/remove_whitelist',
+        {username: username, token: token, type, trailed})).data;
+
+    if (response.status === "ok") {
+        return dispatch({
+            type: 'REMOVE_WHITELIST',
+            payload: {
+                trailed
             }
         });
     }
@@ -274,6 +333,9 @@ export {
     logout,
     setMinPayout,
     saveMinPayout,
-    login_keychain
+    login_keychain,
+    addToWhitelist,
+    fetchWhitelist,
+    removeWhitelist
 
 };

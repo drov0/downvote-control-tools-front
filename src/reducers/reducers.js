@@ -31,7 +31,7 @@ const userReducer = (state  = "", action) => {
     return state;
 };
 
-const dataReducer = (state  = {negative_trail : "", positive_trail : "", counter_trail : ""}, action) => {
+const dataReducer = (state  = {negative_trail : "", positive_trail : "", counter_trail : "", whitelist : ""}, action) => {
 
     if (action.type === "FETCH_TRAILS")
     {
@@ -72,6 +72,21 @@ const dataReducer = (state  = {negative_trail : "", positive_trail : "", counter
         else if (trail.trail_type === 2)
             new_state.counter_trail = state.counter_trail.filter(el => el.trailed !== trail.trailed);
 
+        return new_state
+    } else if (action.type === "FETCH_WHITELIST")
+    {
+        let new_state = _.cloneDeep(state);
+        new_state.whitelist = action.payload;
+        return new_state
+    } else if (action.type === "ADD_WHITELIST")
+    {
+        let new_state = _.cloneDeep(state);
+        new_state.whitelist.push(action.payload);
+        return new_state
+    } else if (action.type === "REMOVE_WHITELIST")
+    {
+        let new_state = _.cloneDeep(state);
+        new_state.whitelist = state.whitelist.filter(el => el.trailed !== action.payload.trailed);
         return new_state
     }
 
