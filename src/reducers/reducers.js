@@ -31,7 +31,7 @@ const userReducer = (state  = "", action) => {
     return state;
 };
 
-const dataReducer = (state  = {negative_trail : "", positive_trail : ""}, action) => {
+const dataReducer = (state  = {negative_trail : "", positive_trail : "", counter_trail : ""}, action) => {
 
     if (action.type === "FETCH_TRAILS")
     {
@@ -50,9 +50,12 @@ const dataReducer = (state  = {negative_trail : "", positive_trail : ""}, action
 
         if (trail.trail_type === 1) {
             new_state.positive_trail.push(action.payload);
-        } else
+        } else if (trail.trail_type === -1)
         {
             new_state.negative_trail.push(action.payload);
+        } else if (trail.trail_type === 2)
+        {
+            new_state.counter_trail.push(action.payload);
         }
 
         return new_state
@@ -62,11 +65,12 @@ const dataReducer = (state  = {negative_trail : "", positive_trail : ""}, action
 
         let trail = action.payload;
 
-        if (trail.trail_type === 1) {
+        if (trail.trail_type === 1)
             new_state.positive_trail = state.positive_trail.filter(el => el.trailed !== trail.trailed);
-        } else {
+        else if (trail.trail_type === -1)
             new_state.negative_trail = state.negative_trail.filter(el => el.trailed !== trail.trailed);
-        }
+        else if (trail.trail_type === 2)
+            new_state.counter_trail = state.counter_trail.filter(el => el.trailed !== trail.trailed);
 
         return new_state
     }
