@@ -6,8 +6,7 @@ import {} from "../actions/actions"
 import Login from "./Login";
 import {login} from "../actions/actions";
 import {fetchLogin} from "../actions/actions";
-import {fetchNegativeTrail} from "../actions/actions";
-import {fetchPositiveTrail} from "../actions/actions";
+import {fetchTrails} from "../actions/actions";
 import {addToTrail} from "../actions/actions";
 import {toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
@@ -17,6 +16,9 @@ import {setThreshold} from "../actions/actions";
 import {logout} from "../actions/actions";
 import {setMinPayout} from "../actions/actions";
 import {saveMinPayout} from "../actions/actions";
+import {addToWhitelist} from "../actions/actions";
+import {fetchWhitelist} from "../actions/actions";
+import {removeWhitelist} from "../actions/actions";
 
 const Joi = require('joi');
 
@@ -31,25 +33,34 @@ class Settings extends React.Component
         ratio: Joi.number().min(0.1).max(2.5),
     });
 
+    whitelist_schema = Joi.object().keys({
+        username: Joi.string().min(3).max(16).required(),
+    });
+
     async componentDidMount() {
-        this.props.fetchNegativeTrail(this.props.logged_user.username, this.props.logged_user.token );
-        this.props.fetchPositiveTrail(this.props.logged_user.username, this.props.logged_user.token );
-    }
+        this.props.fetchTrails(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type);
+        this.props.fetchWhitelist(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type);
+    };
 
 
-    remove_trail = (trailed, positive) =>
+    remove_trail = (trailed, type) =>
     {
-            this.props.removeTrail(this.props.logged_user.username, this.props.logged_user.token, trailed, positive);
+            this.props.removeTrail(this.props.logged_user.username, this.props.logged_user.token,this.props.logged_user.type, trailed, type);
+    };
+
+    remove_whitelist = (trailed) =>
+    {
+            this.props.removeWhitelist(this.props.logged_user.username, this.props.logged_user.token,this.props.logged_user.type, trailed);
     };
 
     set_threshold = () =>
     {
-            this.props.saveThreshold(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.threshold);
+            this.props.saveThreshold(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type,  this.props.logged_user.threshold);
     };
 
     save_min_payout = () =>
     {
-            this.props.saveMinPayout(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.min_payout);
+            this.props.saveMinPayout(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type, this.props.logged_user.min_payout);
     };
 
 
@@ -80,42 +91,58 @@ class Settings extends React.Component
         }
 
         return rows
+    };
+
+    render_whitelist = () =>
+    {
+        let rows = [];
+        for (let i = 0; i < this.props.data.whitelist.length; i++) {
+            rows.push(<tr>
+                <td>{this.props.data.whitelist[i].trailed}</td>
+                <td><button className={"btn btn-primary"} onClick={() => this.remove_whitelist(this.props.data.whitelist[i].trailed)}>Delete</button></td>
+            </tr>)
+        }
+
+        return rows
+    };
+
+    render_counter_downvote_trail = () =>
+    {
+        let rows = [];
+        for (let i = 0; i < this.props.data.counter_trail.length; i++) {
+            rows.push(<tr>
+                <td>{this.props.data.counter_trail[i].trailed}</td>
+                <td>{this.props.data.counter_trail[i].ratio}</td>
+                <td><button className={"btn btn-primary"} onClick={() => this.remove_trail(this.props.data.counter_trail[i].trailed, 2)}>Delete</button></td>
+            </tr>)
+        }
+
+        return rows
 
     };
 
-
-    add_positive_trail= () =>
+    add_trail = (type) =>
     {
-
-
         let test = Joi.validate({username : this.state.trail_username, ratio : this.state.trail_ratio}, this.trailed_schema);
-
-
-        if (test.error === null) {
-
-            this.props.addToTrail(this.props.logged_user.username, this.props.logged_user.token, this.state.trail_username, this.state.trail_ratio, 1);
-        } else
-        {
+        if (test.error === null)
+            this.props.addToTrail(this.props.logged_user.username, this.props.logged_user.token,this.props.logged_user.type, this.state.trail_username, this.state.trail_ratio, type);
+        else
             toast.error(test.error.details[0].message);
-        }
     };
 
-    add_negative_trail= () =>
+    add_whitelist = () =>
     {
-        let test = Joi.validate({username : this.state.trail_username, ratio : this.state.trail_ratio}, this.trailed_schema);
+        let test = Joi.validate({username : this.state.trail_username}, this.whitelist_schema);
 
-        if (test.error === null) {
-
-            this.props.addToTrail(this.props.logged_user.username, this.props.logged_user.token, this.state.trail_username, this.state.trail_ratio, -1);
-        } else
-        {
+        if (test.error === null)
+            this.props.addToWhitelist(this.props.logged_user.username, this.props.logged_user.token,this.props.logged_user.type, this.state.trail_username);
+        else
             toast.error(test.error.details[0].message);
-        }
     };
 
     logout = () =>
     {
-        this.props.logout(this.props.logged_user.username, this.props.logged_user.token);
+        this.props.logout(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type);
     };
 
     render() {
@@ -166,7 +193,7 @@ class Settings extends React.Component
 
                                 <input type={"text"} placeholder={"username"} value={this.state.trail_username} onChange={(e) => this.setState({trail_username : e.target.value})}/>
                                 <input type={"number"} min={0} max={2.5} step={0.01} style={{width : "60px"}} value={this.state.trail_ratio} onChange={(e) => this.setState({trail_ratio : e.target.value})}/>
-                                <button className={"btn  btn-primary"} onClick={this.add_positive_trail}>Add</button>
+                                <button className={"btn  btn-primary"} onClick={() => this.add_trail(1)}>Add</button>
 
                                 <table className="table">
                                     <thead>
@@ -191,7 +218,7 @@ class Settings extends React.Component
 
                                 <input type={"text"} placeholder={"username"} value={this.state.trail_username} onChange={(e) => this.setState({trail_username : e.target.value})}/>
                                 <input type={"number"} min={0} max={2.5} step={0.1} style={{width : "60px"}} value={this.state.trail_ratio} onChange={(e) => this.setState({trail_ratio : e.target.value})}/>
-                                <button className={"btn btn-primary"} onClick={this.add_negative_trail} >Add</button>
+                                <button className={"btn btn-primary"} onClick={() => this.add_trail(-1)} >Add</button>
 
                                 <table className="table">
                                     <thead>
@@ -203,6 +230,49 @@ class Settings extends React.Component
                                     </thead>
                                     <tbody>
                                     {this.render_negative_trails()}
+
+                                    </tbody>
+                                </table>
+                            </Tab>
+                            <Tab eventKey="counter_downvotes" title="Counter downvotes " >
+                                <h5> Counter downvotes </h5>
+                                <p> Used to counteract downvotes from specified accounts, meaning that you will upvote anything that they choose to downvote at a given rate relative to their downvote. </p>
+                                <p>Example: If you choose to counter downvote <b>@baduser</b>r with rating 1.2, then if <b>@baduser</b> gives a 50% downvote on something, you will do a <b>60%</b> upvote to the same post or comment, while a rating of 0.5 would make you upvote at <b>25%</b>, etc.</p>
+
+                                <input type={"text"} placeholder={"username"} value={this.state.trail_username} onChange={(e) => this.setState({trail_username : e.target.value})}/>
+                                <input type={"number"} min={0} max={2.5} step={0.1} style={{width : "60px"}} value={this.state.trail_ratio} onChange={(e) => this.setState({trail_ratio : e.target.value})}/>
+                                <button className={"btn btn-primary"} onClick={() => this.add_trail(2)} >Add</button>
+
+                                <table className="table">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">Username</th>
+                                        <th scope="col">Ratio</th>
+                                        <th scope="col">Delete</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {this.render_counter_downvote_trail()}
+
+                                    </tbody>
+                                </table>
+                            </Tab>
+                            <Tab eventKey="whitelist" title="Whitelist" >
+                                <h5> Whitelist </h5>
+                                <p>You won't downvote the users in this list</p>
+
+                                <input type={"text"} placeholder={"username"} value={this.state.trail_username} onChange={(e) => this.setState({trail_username : e.target.value})}/>
+                                <button className={"btn btn-primary"} onClick={this.add_whitelist} >Add</button>
+
+                                <table className="table">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">Username</th>
+                                        <th scope="col">Delete</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {this.render_whitelist()}
 
                                     </tbody>
                                 </table>
@@ -224,4 +294,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, {login, logout, fetchLogin, fetchNegativeTrail, fetchPositiveTrail, addToTrail, removeTrail, saveThreshold, setThreshold, setMinPayout, saveMinPayout})(Settings);
+export default connect(mapStateToProps, {login, logout, fetchLogin,fetchWhitelist, fetchTrails, addToTrail, removeTrail, saveThreshold, setThreshold, setMinPayout, saveMinPayout, addToWhitelist, removeWhitelist})(Settings);

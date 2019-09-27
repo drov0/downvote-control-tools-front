@@ -15,10 +15,10 @@ const fetchLogin = () => async (dispatch) => {
     const cookies = new Cookies();
 
     let logged_user = "";
-    if (cookies.get("username") !== undefined && cookies.get("token") !== undefined)
+    if (cookies.get("username") !== undefined && cookies.get("token") !== undefined && cookies.get("type") !== undefined)
     {
         const response = (await backend.post('/auth/user',
-            {username: cookies.get("username"), token: cookies.get("token")})).data;
+            {username: cookies.get("username"), token: cookies.get("token"), type : cookies.get("type")})).data;
 
         if (response.status === "ok") {
 
@@ -33,7 +33,9 @@ const fetchLogin = () => async (dispatch) => {
                 voting_power : Math.ceil(utils.getvotingpower(steem_data)*100)/100,
                 downvoting_power : Math.ceil(utils.downvotingpower(steem_data)*100)/100,
                 threshold : response.threshold,
-                min_payout : response.min_payout
+                min_payout : response.min_payout,
+                type: cookies.get("type"),
+
             };
         }
     }
@@ -58,6 +60,7 @@ const login = (data) => async(dispatch) => {
 
     cookies.set('username', data.username, { path: '/', expires : next_week});
     cookies.set('token', data.token, { path: '/', expires : next_week});
+    cookies.set('type', "steemconnect", { path: '/', expires : next_week});
 
     let steem_data = await client.database.getAccounts([data.username]);
 
@@ -71,7 +74,8 @@ const login = (data) => async(dispatch) => {
         voting_power : Math.ceil(utils.getvotingpower(steem_data)*100)/100,
         downvoting_power : Math.ceil(utils.downvotingpower(steem_data)*100)/100,
         threshold : data.threshold,
-        min_payout : data.min_payout
+        min_payout : data.min_payout,
+        type: "steemconnect"
     };
 
     dispatch({
@@ -80,50 +84,45 @@ const login = (data) => async(dispatch) => {
     });
 };
 
-
-
-
-const fetchNegativeTrail = (username, token) => async (dispatch) => {
+const fetchTrails = (username, token, type) => async (dispatch) => {
 
         const response = (await backend.post('/settings/get_trail',
-            {username: username, token: token, positive : -1})).data;
+            {username: username, token: token, type: type})).data;
 
         if (response.status === "ok") {
            return dispatch({
-                type: 'FETCH_NEGATIVE_TRAIL',
+                type: 'FETCH_TRAILS',
                 payload: response.data
             });
         }
 };
 
-const fetchPositiveTrail = (username, token) => async (dispatch) => {
+const fetchWhitelist = (username, token, type) => async (dispatch) => {
 
-        const response = (await backend.post('/settings/get_trail',
-            {username: username, token: token, positive : 1})).data;
+        const response = (await backend.post('/settings/get_whitelist',
+            {username: username, token: token, type: type})).data;
 
         if (response.status === "ok") {
            return dispatch({
-                type: 'FETCH_POSITIVE_TRAIL',
+                type: 'FETCH_WHITELIST',
                 payload: response.data
             });
         }
 };
 
 
-const addToTrail = (username, token, trailed, ratio, positive) => async (dispatch) => {
+const addToTrail = (username, token, type,  trailed, ratio, trail_type) => async (dispatch) => {
 
     let account = await client.database.getAccounts([trailed]);
 
-
     if (account.length === 0)
     {
-        toast.error("User "+ trailed + " doesn't exists")
+        toast.error("User "+ trailed + " doesn't exists");
         return;
     }
 
-
     const response = (await backend.post('/settings/add_trail',
-        {username: username, token: token, trailed, ratio, positive})).data;
+        {username: username, token: token, type, trailed, ratio, trail_type})).data;
 
     if (response.status === "ok") {
         return dispatch({
@@ -132,7 +131,7 @@ const addToTrail = (username, token, trailed, ratio, positive) => async (dispatc
                 username,
                 trailed,
                 ratio,
-                positive
+                trail_type
             }
         });
     } else
@@ -143,26 +142,72 @@ const addToTrail = (username, token, trailed, ratio, positive) => async (dispatc
         }
     }
 };
-const removeTrail = (username, token, trailed, positive) => async (dispatch) => {
+
+const addToWhitelist = (username, token, type, trailed) => async (dispatch) => {
+    let account = await client.database.getAccounts([trailed]);
+
+    if (account.length === 0)
+    {
+        toast.error("User "+ trailed + " doesn't exists");
+        return;
+    }
+
+    const response = (await backend.post('/settings/add_whitelist',
+        {username: username, token: token, type, trailed})).data;
+
+    if (response.status === "ok") {
+        return dispatch({
+            type: 'ADD_WHITELIST',
+            payload: {
+                username,
+                trailed
+            }
+        });
+    } else
+    {
+        if (response.error === "already exists")
+        {
+            toast.error("This user is already in the whitelist")
+        }
+    }
+};
+
+
+const removeTrail = (username, token, type, trailed, trail_type) => async (dispatch) => {
 
     const response = (await backend.post('/settings/remove_trail',
-        {username: username, token: token, trailed, positive})).data;
+        {username: username, token: token, type, trailed, trail_type})).data;
 
     if (response.status === "ok") {
         return dispatch({
             type: 'REMOVE_TRAIL',
             payload: {
                 trailed,
-                positive
+                trail_type
             }
         });
     }
 };
 
-const saveThreshold = (username, token, threshold) => async (dispatch) => {
+const removeWhitelist = (username, token, type, trailed) => async (dispatch) => {
+
+    const response = (await backend.post('/settings/remove_whitelist',
+        {username: username, token: token, type, trailed})).data;
+
+    if (response.status === "ok") {
+        return dispatch({
+            type: 'REMOVE_WHITELIST',
+            payload: {
+                trailed
+            }
+        });
+    }
+};
+
+const saveThreshold = (username, token, type,  threshold) => async (dispatch) => {
 
     const response = (await backend.post('/settings/update_threshold',
-        {username: username, token: token, threshold})).data;
+        {username, token, type, threshold})).data;
 
     if (response.status === "ok") {
 
@@ -174,6 +219,25 @@ const saveThreshold = (username, token, threshold) => async (dispatch) => {
         });
     }
 };
+
+
+const saveMinPayout = (username, token, type,  min_payout) => async (dispatch) => {
+
+    const response = (await backend.post('/settings/update_min_payout',
+        {username, token, type, min_payout})).data;
+
+    if (response.status === "ok") {
+
+        toast.info("Saved");
+
+        return dispatch({
+            type: 'SET_PAYOUT',
+            payload: min_payout
+        });
+    }
+};
+
+
 
 const setThreshold = (threshold) => async (dispatch) => {
         return dispatch({
@@ -190,34 +254,16 @@ const setMinPayout = (payout) => async (dispatch) => {
 };
 
 
-const saveMinPayout = (username, token, payout) => async (dispatch) => {
-
-    const response = (await backend.post('/settings/update_min_payout',
-        {username: username, token: token, min_payout : payout})).data;
-
-    if (response.status === "ok") {
-
-        toast.info("Saved");
-
-        return dispatch({
-            type: 'SET_PAYOUT',
-            payload: payout
-        });
-    }
-};
 
 
-
-
-const logout = (username, token) => async (dispatch) => {
+const logout = (username, token, type) => async (dispatch) => {
     const cookies = new Cookies();
 
-    cookies.remove("uuid");
+    cookies.remove("login");
     cookies.remove("username");
-    cookies.remove("name");
-    cookies.remove("avatar");
+    cookies.remove("token");
 
-    await backend.post('/auth/logout', {username: username, token: token});
+    await backend.post('/auth/logout', {username: username, token: token, type : type});
 
     dispatch({
         type: 'LOGOUT',
@@ -227,12 +273,59 @@ const logout = (username, token) => async (dispatch) => {
 
 
 
+const login_keychain = (username, encrypted_username) => async (dispatch) => {
+
+    let data = (await backend.post('/auth/keychain/login', {username, encrypted_username})).data;
+
+    if (data.status === "ok")
+    {
+        data = data.account;
+
+        const cookies = new Cookies();
+
+        let next_week = new Date();
+
+        next_week.setDate(next_week.getDate() + 14);
+
+        let profile_image = "https://steemitimages.com/u/"+username+"/avatar";
+
+        cookies.set('username', data.username, { path: '/', expires : next_week});
+        cookies.set('token', data.token, { path: '/', expires : next_week});
+        cookies.set('type', "keychain", { path: '/', expires : next_week});
+
+        let steem_data = await client.database.getAccounts([username]);
+
+        steem_data = steem_data[0];
+
+        let logged_user = {
+            username : username,
+            token : data.token,
+            avatar: profile_image,
+            steem_data : steem_data,
+            voting_power : Math.ceil(utils.getvotingpower(steem_data)*100)/100,
+            downvoting_power : Math.ceil(utils.downvotingpower(steem_data)*100)/100,
+            threshold : data.threshold,
+            min_payout : data.min_payout,
+            type : "keychain"
+        };
+
+        dispatch({
+            type: 'LOGIN',
+            payload: logged_user
+        });
+    }
+
+
+
+};
+
+
+
 export {
 
     fetchLogin,
     login,
-    fetchNegativeTrail,
-    fetchPositiveTrail,
+    fetchTrails,
     addToTrail,
     removeTrail,
     saveThreshold,
@@ -240,5 +333,9 @@ export {
     logout,
     setMinPayout,
     saveMinPayout,
+    login_keychain,
+    addToWhitelist,
+    fetchWhitelist,
+    removeWhitelist
 
 };
