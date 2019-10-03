@@ -54,8 +54,10 @@ class LoginParking extends React.Component {
 
     };
 
-    login_keychain = async () =>
+    login_keychain = async (event) =>
     {
+        event.preventDefault();
+
 
         if(window.steem_keychain) {
             let keychain = window.steem_keychain;
@@ -134,9 +136,10 @@ class LoginParking extends React.Component {
                         <br />
                         <span style={{color : "red"}}>{this.state.error}</span>
 
+                        <form onSubmit={this.login_keychain}>
                         <input type={"text"} placeholder={"Username"} value={this.state.username} onChange={(event) => this.setState({username : event.target.value})} />
 
-                        <button type={"button"} className="btn btn-primary " onClick={this.login_keychain} style={{
+                        <button type={"button"} className="btn btn-primary " onClick={this.login_keychain}  style={{
                             backgroundColor: "white",
                             color: "#999999",
                             width: "235px",
@@ -145,6 +148,7 @@ class LoginParking extends React.Component {
                             borderRadius: "0"
                         }}>Log in with keychain
                         </button>
+                        </form>
 
 
                     </div>

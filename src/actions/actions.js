@@ -32,7 +32,8 @@ const fetchLogin = () => async (dispatch) => {
                 steem_data : steem_data,
                 voting_power : Math.ceil(utils.getvotingpower(steem_data)*100)/100,
                 downvoting_power : Math.ceil(utils.downvotingpower(steem_data)*100)/100,
-                threshold : response.threshold,
+                vp_threshold : response.vp_threshold,
+                dv_threshold : response.dv_threshold,
                 min_payout : response.min_payout,
                 type: cookies.get("type"),
 
@@ -204,20 +205,13 @@ const removeWhitelist = (username, token, type, trailed) => async (dispatch) => 
     }
 };
 
-const saveThreshold = (username, token, type,  threshold) => async (dispatch) => {
+const saveThreshold = (username, token, type,  threshold, threshold_type) => async (dispatch) => {
 
     const response = (await backend.post('/settings/update_threshold',
-        {username, token, type, threshold})).data;
+        {username, token, type, threshold, threshold_type})).data;
 
-    if (response.status === "ok") {
-
+    if (response.status === "ok")
         toast.info("Saved");
-
-        return dispatch({
-            type: 'SET_THRESHOLD',
-            payload: threshold
-        });
-    }
 };
 
 
@@ -239,9 +233,16 @@ const saveMinPayout = (username, token, type,  min_payout) => async (dispatch) =
 
 
 
-const setThreshold = (threshold) => async (dispatch) => {
+const setDvThreshold = (threshold) => async (dispatch) => {
         return dispatch({
-            type: 'SET_THRESHOLD',
+            type: 'SET_DV_THRESHOLD',
+            payload: threshold
+        });
+};
+
+const setVpThreshold = (threshold) => async (dispatch) => {
+        return dispatch({
+            type: 'SET_VP_THRESHOLD',
             payload: threshold
         });
 };
@@ -329,7 +330,8 @@ export {
     addToTrail,
     removeTrail,
     saveThreshold,
-    setThreshold,
+    setDvThreshold,
+    setVpThreshold,
     logout,
     setMinPayout,
     saveMinPayout,

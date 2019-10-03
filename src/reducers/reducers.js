@@ -14,11 +14,17 @@ const userReducer = (state  = "", action) => {
     }else if (action.type === "LOGOUT")
     {
         return ""
-    } else if (action.type === "SET_THRESHOLD" )
+    } else if (action.type === "SET_DV_THRESHOLD" )
     {
         let new_state = _.cloneDeep(state);
 
-        new_state.threshold = action.payload;
+        new_state.dv_threshold = action.payload;
+        return new_state
+    }else if (action.type === "SET_VP_THRESHOLD" )
+    {
+        let new_state = _.cloneDeep(state);
+
+        new_state.vp_threshold = action.payload;
         return new_state
     } else if (action.type === "SET_PAYOUT" )
     {
