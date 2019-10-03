@@ -12,13 +12,14 @@ import {toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import {removeTrail} from "../actions/actions";
 import {saveThreshold} from "../actions/actions";
-import {setThreshold} from "../actions/actions";
 import {logout} from "../actions/actions";
 import {setMinPayout} from "../actions/actions";
 import {saveMinPayout} from "../actions/actions";
 import {addToWhitelist} from "../actions/actions";
 import {fetchWhitelist} from "../actions/actions";
 import {removeWhitelist} from "../actions/actions";
+import {setDvThreshold} from "../actions/actions";
+import {setVpThreshold} from "../actions/actions";
 
 const Joi = require('joi');
 
@@ -53,9 +54,13 @@ class Settings extends React.Component
             this.props.removeWhitelist(this.props.logged_user.username, this.props.logged_user.token,this.props.logged_user.type, trailed);
     };
 
-    set_threshold = () =>
+    set_threshold = (type) =>
     {
-            this.props.saveThreshold(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type,  this.props.logged_user.threshold);
+        if (type === "dv")
+            this.props.saveThreshold(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type,  this.props.logged_user.dv_threshold, type);
+        else if (type === "vp")
+            this.props.saveThreshold(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type,  this.props.logged_user.vp_threshold, type);
+
     };
 
     save_min_payout = () =>
@@ -165,7 +170,7 @@ class Settings extends React.Component
                     </nav>
 
                     <main role="main" className="container">
-                        <h3> Logged in as :  {this.props.logged_user.username}</h3>
+                        <h3> Logged in as :  {this.props.logged_user.username}</h3>saveThreshold
                         <p> Current voting power is : {this.props.logged_user.voting_power} % <br/>
                             Current downvoting power is : {this.props.logged_user.downvoting_power} %</p>
                         <br/>
@@ -173,7 +178,11 @@ class Settings extends React.Component
                         <h4>Global settings : </h4>
 
                         <p>Only use automatic downvote votes when power is above :
-                        <input type={"number"} style={{width : "60px"}} max={100} min={0} value={this.props.logged_user.threshold} onChange={(e) => this.props.setThreshold(e.target.value)}/> % <button onClick={this.set_threshold} className={"btn btn-primary"}>Save</button>
+                        <input type={"number"} style={{width : "60px"}} max={100} min={0} value={this.props.logged_user.dv_threshold} onChange={(e) => this.props.setDvThreshold(e.target.value)}/> % <button onClick={() => this.set_threshold("dv")} className={"btn btn-primary"}>Save</button>
+                        </p>
+                        <p>If my downvoting power reaches 0, use my voting power to downvote when my power is above :
+                        <input type={"number"} style={{width : "60px"}} max={100} min={0} value={this.props.logged_user.vp_threshold} onChange={(e) => this.props.setVpThreshold(e.target.value)}/> % <button onClick={() => this.set_threshold("vp")} className={"btn btn-primary"}>Save</button>
+                            <br/><small>This setting also applies when upvoting to counter downvotes</small>
                         </p>
 
                         <p>Only downvote if the post has more than  :
@@ -294,4 +303,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, {login, logout, fetchLogin,fetchWhitelist, fetchTrails, addToTrail, removeTrail, saveThreshold, setThreshold, setMinPayout, saveMinPayout, addToWhitelist, removeWhitelist})(Settings);
+export default connect(mapStateToProps, {login, logout, fetchLogin,fetchWhitelist, fetchTrails, addToTrail, removeTrail, saveThreshold, setDvThreshold, setVpThreshold, setMinPayout, saveMinPayout, addToWhitelist, removeWhitelist})(Settings);
