@@ -3,9 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="fe30a47c-9d94-47f8-b4b7-53f936dd7962" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/actions/actions.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/actions/actions.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Settings.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Settings.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/reducers/reducers.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/reducers/reducers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Login.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Login.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -32,8 +30,11 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/public" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_interpreter_path" value="node" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -103,7 +104,14 @@
       <workItem from="1567335836875" duration="1158000" />
       <workItem from="1567883413990" duration="804000" />
       <workItem from="1569195956511" duration="1104000" />
-      <workItem from="1569351927389" duration="14679000" />
+      <workItem from="1569351927389" duration="15398000" />
+      <workItem from="1569602926124" duration="599000" />
+      <workItem from="1569621791678" duration="1202000" />
+      <workItem from="1569755824155" duration="1203000" />
+      <workItem from="1569784674834" duration="599000" />
+      <workItem from="1569874038373" duration="599000" />
+      <workItem from="1570042534995" duration="2399000" />
+      <workItem from="1570132361220" duration="712000" />
     </task>
     <servers />
   </component>
