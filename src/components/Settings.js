@@ -3,7 +3,6 @@ import {connect} from "react-redux";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
 import {} from "../actions/actions"
-import Login from "./Login";
 import {login} from "../actions/actions";
 import {fetchLogin} from "../actions/actions";
 import {fetchTrails} from "../actions/actions";
@@ -170,7 +169,7 @@ class Settings extends React.Component
                     </nav>
 
                     <main role="main" className="container">
-                        <h3> Logged in as :  {this.props.logged_user.username}</h3>saveThreshold
+                        <h3> Logged in as :  {this.props.logged_user.username}</h3>
                         <p> Current voting power is : {this.props.logged_user.voting_power} % <br/>
                             Current downvoting power is : {this.props.logged_user.downvoting_power} %</p>
                         <br/>

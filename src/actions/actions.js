@@ -74,7 +74,8 @@ const login = (data) => async(dispatch) => {
         steem_data : steem_data,
         voting_power : Math.ceil(utils.getvotingpower(steem_data)*100)/100,
         downvoting_power : Math.ceil(utils.downvotingpower(steem_data)*100)/100,
-        threshold : data.threshold,
+        vp_threshold : data.vp_threshold,
+        dv_threshold : data.dv_threshold,
         min_payout : data.min_payout,
         type: "steemconnect"
     };
@@ -305,7 +306,8 @@ const login_keychain = (username, encrypted_username) => async (dispatch) => {
             steem_data : steem_data,
             voting_power : Math.ceil(utils.getvotingpower(steem_data)*100)/100,
             downvoting_power : Math.ceil(utils.downvotingpower(steem_data)*100)/100,
-            threshold : data.threshold,
+            vp_threshold : data.vp_threshold,
+            dv_threshold : data.dv_threshold,
             min_payout : data.min_payout,
             type : "keychain"
         };
