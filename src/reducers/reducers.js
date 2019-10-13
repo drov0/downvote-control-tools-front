@@ -9,7 +9,6 @@ const userReducer = (state  = "", action) => {
         return action.payload;
     } else if (action.type === "FETCH_LOGIN" )
     {
-
         return action.payload;
     }else if (action.type === "LOGOUT")
     {
@@ -37,7 +36,7 @@ const userReducer = (state  = "", action) => {
     return state;
 };
 
-const dataReducer = (state  = {negative_trail : "", positive_trail : "", counter_trail : "", whitelist : ""}, action) => {
+const dataReducer = (state  = {negative_trail : "", positive_trail : "", counter_trail : "", whitelist : "", hitlist : ""}, action) => {
 
     if (action.type === "FETCH_TRAILS")
     {
@@ -89,12 +88,28 @@ const dataReducer = (state  = {negative_trail : "", positive_trail : "", counter
         let new_state = _.cloneDeep(state);
         new_state.whitelist.push(action.payload);
         return new_state
+    } else if (action.type === "ADD_HITLIST")
+    {
+        let new_state = _.cloneDeep(state);
+        new_state.hitlist.push(action.payload);
+        return new_state
     } else if (action.type === "REMOVE_WHITELIST")
     {
         let new_state = _.cloneDeep(state);
         new_state.whitelist = state.whitelist.filter(el => el.trailed !== action.payload.trailed);
         return new_state
+    } else if (action.type === "FETCH_HITLIST")
+    {
+        let new_state = _.cloneDeep(state);
+        new_state.hitlist = action.payload;
+        return new_state
+    } else if (action.type === "REMOVE_HITLIST")
+    {
+        let new_state = _.cloneDeep(state);
+        new_state.hitlist = state.whitelist.filter(el => el.author !== action.payload.author);
+        return new_state
     }
+
 
     return state;
 

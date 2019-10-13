@@ -112,6 +112,19 @@ const fetchWhitelist = (username, token, type) => async (dispatch) => {
         }
 };
 
+const fetchHitlist = (username, token, type) => async (dispatch) => {
+
+        const response = (await backend.post('/settings/get_hitlist',
+            {username: username, token: token, type: type})).data;
+
+        if (response.status === "ok") {
+           return dispatch({
+                type: 'FETCH_HITLIST',
+                payload: response.data
+            });
+        }
+};
+
 
 const addToTrail = (username, token, type,  trailed, ratio, trail_type) => async (dispatch) => {
 
@@ -175,6 +188,38 @@ const addToWhitelist = (username, token, type, trailed) => async (dispatch) => {
 };
 
 
+const addToHitlist = (username, token, type, author, percent, min_payout) => async (dispatch) => {
+    let account = await client.database.getAccounts([author]);
+
+    if (account.length === 0)
+    {
+        toast.error("User "+ author + " doesn't exists");
+        return;
+    }
+
+    const response = (await backend.post('/settings/add_hitlist',
+        {username: username, token: token, type, author, percent, min_payout})).data;
+
+    if (response.status === "ok") {
+        return dispatch({
+            type: 'ADD_HITLIST',
+            payload: {
+                username,
+                author,
+                percent,
+                min_payout
+            }
+        });
+    } else
+    {
+        if (response.error === "already exists")
+        {
+            toast.error("This user is already in the hitlist")
+        }
+    }
+};
+
+
 const removeTrail = (username, token, type, trailed, trail_type) => async (dispatch) => {
 
     const response = (await backend.post('/settings/remove_trail',
@@ -201,6 +246,21 @@ const removeWhitelist = (username, token, type, trailed) => async (dispatch) => 
             type: 'REMOVE_WHITELIST',
             payload: {
                 trailed
+            }
+        });
+    }
+};
+
+const removeHitlist = (username, token, type, author) => async (dispatch) => {
+
+    const response = (await backend.post('/settings/remove_hitlist',
+        {username: username, token: token, type, author})).data;
+
+    if (response.status === "ok") {
+        return dispatch({
+            type: 'REMOVE_HITLIST',
+            payload: {
+                author
             }
         });
     }
@@ -340,6 +400,9 @@ export {
     login_keychain,
     addToWhitelist,
     fetchWhitelist,
-    removeWhitelist
+    removeWhitelist,
+    fetchHitlist,
+    removeHitlist,
+    addToHitlist
 
 };

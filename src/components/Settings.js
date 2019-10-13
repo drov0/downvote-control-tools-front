@@ -19,13 +19,16 @@ import {fetchWhitelist} from "../actions/actions";
 import {removeWhitelist} from "../actions/actions";
 import {setDvThreshold} from "../actions/actions";
 import {setVpThreshold} from "../actions/actions";
+import {fetchHitlist} from "../actions/actions";
+import {removeHitlist} from "../actions/actions";
+import {addToHitlist} from "../actions/actions";
 
 const Joi = require('joi');
 
 class Settings extends React.Component
 {
 
-    state = {trail_username : "", trail_ratio : 1};
+    state = {trail_username : "", trail_ratio : 1, hitlist_percent : 50, hitlist_min_payout : 5};
 
 
     trailed_schema = Joi.object().keys({
@@ -37,9 +40,16 @@ class Settings extends React.Component
         username: Joi.string().min(3).max(16).required(),
     });
 
+    hitlist_schema = Joi.object().keys({
+        username: Joi.string().min(3).max(16).required(),
+        percent: Joi.number().min(0.1).max(100),
+        min_payout: Joi.number().min(0.1),
+    });
+
     async componentDidMount() {
         this.props.fetchTrails(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type);
         this.props.fetchWhitelist(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type);
+        this.props.fetchHitlist(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type);
     };
 
 
@@ -48,9 +58,14 @@ class Settings extends React.Component
             this.props.removeTrail(this.props.logged_user.username, this.props.logged_user.token,this.props.logged_user.type, trailed, type);
     };
 
-    remove_whitelist = (trailed) =>
+    remove_whitelist = (author) =>
     {
-            this.props.removeWhitelist(this.props.logged_user.username, this.props.logged_user.token,this.props.logged_user.type, trailed);
+            this.props.removeWhitelist(this.props.logged_user.username, this.props.logged_user.token,this.props.logged_user.type, author);
+    };
+
+    remove_hitlist = (author) =>
+    {
+            this.props.removeHitlist(this.props.logged_user.username, this.props.logged_user.token,this.props.logged_user.type, author);
     };
 
     set_threshold = (type) =>
@@ -110,6 +125,21 @@ class Settings extends React.Component
         return rows
     };
 
+    render_hitlist = () =>
+    {
+        let rows = [];
+        for (let i = 0; i < this.props.data.hitlist.length; i++) {
+            rows.push(<tr>
+                <td>{this.props.data.hitlist[i].author}</td>
+                <td>{this.props.data.hitlist[i].percent} %</td>
+                <td>{this.props.data.hitlist[i].min_payout} $</td>
+                <td><button className={"btn btn-primary"} onClick={() => this.remove_hitlist(this.props.data.hitlist[i].author)}>Delete</button></td>
+            </tr>)
+        }
+
+        return rows
+    };
+
     render_counter_downvote_trail = () =>
     {
         let rows = [];
@@ -140,6 +170,16 @@ class Settings extends React.Component
 
         if (test.error === null)
             this.props.addToWhitelist(this.props.logged_user.username, this.props.logged_user.token,this.props.logged_user.type, this.state.trail_username);
+        else
+            toast.error(test.error.details[0].message);
+    };
+
+    add_hitlist = () =>
+    {
+        let test = Joi.validate({username : this.state.trail_username, percent : this.state.hitlist_percent, min_payout : this.state.hitlist_min_payout}, this.hitlist_schema);
+
+        if (test.error === null)
+            this.props.addToHitlist(this.props.logged_user.username, this.props.logged_user.token,this.props.logged_user.type, this.state.trail_username,  this.state.hitlist_percent, this.state.hitlist_min_payout);
         else
             toast.error(test.error.details[0].message);
     };
@@ -200,7 +240,7 @@ class Settings extends React.Component
                                 <p>Example: If you choose to trail <b>@abuse.control</b> with rating 0.75, then if  <b>@abuse.control</b> gives a <b>50%</b> downvote to a post you will give the same post a <b>37.5%</b> downvote.</p>
 
                                 <input type={"text"} placeholder={"username"} value={this.state.trail_username} onChange={(e) => this.setState({trail_username : e.target.value})}/>
-                                <input type={"number"} min={0} max={2.5} step={0.01} style={{width : "60px"}} value={this.state.trail_ratio} onChange={(e) => this.setState({trail_ratio : e.target.value})}/>
+                                <input type={"number"} min={0.01} max={2.5} step={0.01} style={{width : "60px"}} value={this.state.trail_ratio} onChange={(e) => this.setState({trail_ratio : e.target.value})}/>
                                 <button className={"btn  btn-primary"} onClick={() => this.add_trail(1)}>Add</button>
 
                                 <table className="table">
@@ -285,6 +325,33 @@ class Settings extends React.Component
                                     </tbody>
                                 </table>
                             </Tab>
+                            <Tab eventKey="hitlist" title="Hit list" >
+                                <h5> Hist list </h5>
+                                <p>Downvote user using x% whenever his post or comment reaches more than y$ (the number of dollar is the one in the global settings) </p>
+                                <p>For instance you can configure the tool to downvote user @milkinguser whenever he makes more than 5$ on a post or comment with a 30% downvote</p>
+                                Downvote
+                                <input type={"text"} placeholder={"username"} value={this.state.trail_username} onChange={(e) => this.setState({trail_username : e.target.value})}/>
+                                With a
+                                <input type={"number"} style={{width : "60px"}}  min={1} max={100} value={this.state.hitlist_percent} onChange={(e) => this.setState({hitlist_percent : e.target.value})}/>
+                                % downvote if his post has a payout superior to
+                                <input type={"number"} style={{width : "60px"}}   value={this.state.hitlist_min_payout} onChange={(e) => this.setState({hitlist_min_payout : e.target.value})}/> $
+
+                                <button className={"btn btn-primary"} style={{marginLeft : "5px"}} onClick={this.add_hitlist} >Add</button>
+
+                                <table className="table">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">Username</th>
+                                        <th scope="col">downvote percent</th>
+                                        <th scope="col">Minimum payout</th>
+                                        <th scope="col">Delete</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {this.render_hitlist()}
+                                    </tbody>
+                                </table>
+                            </Tab>
                         </Tabs>
                     </main>
                 </div>
@@ -302,4 +369,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, {login, logout, fetchLogin,fetchWhitelist, fetchTrails, addToTrail, removeTrail, saveThreshold, setDvThreshold, setVpThreshold, setMinPayout, saveMinPayout, addToWhitelist, removeWhitelist})(Settings);
+export default connect(mapStateToProps, {login, logout, fetchLogin,fetchWhitelist, fetchTrails, addToTrail, addToHitlist, removeHitlist, removeTrail, saveThreshold, setDvThreshold, setVpThreshold, setMinPayout, saveMinPayout, addToWhitelist, removeWhitelist, fetchHitlist})(Settings);

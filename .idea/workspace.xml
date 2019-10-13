@@ -5,6 +5,7 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/actions/actions.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/actions/actions.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Settings.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Settings.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/reducers/reducers.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/reducers/reducers.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -112,7 +113,13 @@
       <workItem from="1569784674834" duration="599000" />
       <workItem from="1569874038373" duration="599000" />
       <workItem from="1570042534995" duration="2399000" />
-      <workItem from="1570132361220" duration="4646000" />
+      <workItem from="1570132361220" duration="5351000" />
+      <workItem from="1570282070076" duration="599000" />
+      <workItem from="1570373273964" duration="599000" />
+      <workItem from="1570394242221" duration="599000" />
+      <workItem from="1570475602725" duration="599000" />
+      <workItem from="1570891588950" duration="599000" />
+      <workItem from="1570958562469" duration="3315000" />
     </task>
     <servers />
   </component>
