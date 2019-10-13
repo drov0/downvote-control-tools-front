@@ -65,8 +65,9 @@ class Settings extends React.Component
             this.props.removeHitlist(this.props.logged_user.username, this.props.logged_user.token,this.props.logged_user.type, author);
     };
 
-    set_threshold = (type) =>
+    set_threshold = (event, type) =>
     {
+        event.preventDefault();
         if (type === "dv")
             this.props.saveThreshold(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type,  this.props.logged_user.dv_threshold, type);
         else if (type === "vp")
@@ -74,8 +75,9 @@ class Settings extends React.Component
 
     };
 
-    save_min_payout = () =>
+    save_min_payout = (event) =>
     {
+            event.preventDefault();
             this.props.saveMinPayout(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type, this.props.logged_user.min_payout);
     };
 
@@ -152,8 +154,9 @@ class Settings extends React.Component
 
     };
 
-    add_trail = (type) =>
+    add_trail = (event, type) =>
     {
+        event.preventDefault();
         let test = Joi.validate({username : this.state.trail_username, ratio : this.state.trail_ratio}, this.trailed_schema);
         if (test.error === null)
             this.props.addToTrail(this.props.logged_user.username, this.props.logged_user.token,this.props.logged_user.type, this.state.trail_username, this.state.trail_ratio, type);
@@ -161,8 +164,9 @@ class Settings extends React.Component
             toast.error(test.error.details[0].message);
     };
 
-    add_whitelist = () =>
+    add_whitelist = (event) =>
     {
+        event.preventDefault();
         let test = Joi.validate({username : this.state.trail_username}, this.whitelist_schema);
 
         if (test.error === null)
@@ -171,8 +175,9 @@ class Settings extends React.Component
             toast.error(test.error.details[0].message);
     };
 
-    add_hitlist = () =>
+    add_hitlist = (event) =>
     {
+        event.preventDefault();
         let test = Joi.validate({username : this.state.trail_username, percent : this.state.hitlist_percent, min_payout : this.state.hitlist_min_payout}, this.hitlist_schema);
 
         if (test.error === null)
@@ -290,23 +295,23 @@ class Settings extends React.Component
     }
 
     render() {
-            return (
-                <div>
-                    <nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-                        <a className="navbar-brand" href="#">Downvote Control Tool</a>
-                        <button className="navbar-toggler" type="button" data-toggle="collapse"
-                                data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault"
-                                aria-expanded="false" aria-label="Toggle navigation">
-                            <span className="navbar-toggler-icon"/>
-                        </button>
+        return (
+            <div>
+                <nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+                    <a className="navbar-brand" href="#">Downvote Control Tool</a>
+                    <button className="navbar-toggler" type="button" data-toggle="collapse"
+                            data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span className="navbar-toggler-icon"/>
+                    </button>
 
-                        <div className="collapse navbar-collapse" id="navbarsExampleDefault">
-                            <ul className="navbar-nav mr-auto">
-                                <a href={"#"} onClick={this.logout}>logout</a>
-                            </ul>
+                    <div className="collapse navbar-collapse" id="navbarsExampleDefault">
+                        <ul className="navbar-nav mr-auto">
+                            <a href={"#"} onClick={this.logout}>logout</a>
+                        </ul>
 
-                        </div>
-                    </nav>
+                    </div>
+                </nav>
 
                     <main role="main" className="container">
                         <h3> Logged in as :  {this.props.logged_user.username}</h3>
@@ -314,154 +319,162 @@ class Settings extends React.Component
                             Current downvoting power is : {this.props.logged_user.downvoting_power} %</p>
                         <br/>
 
-                        <h4>Global settings : </h4>
+                    <h4>Global settings : </h4>
 
+                    <form onSubmit={(e) => this.set_threshold(e,"dv")}>
                         <p>Only use automatic downvote votes when power is above :
-                        <input type={"number"} style={{width : "60px"}} max={100} min={0} value={this.props.logged_user.dv_threshold} onChange={(e) => this.props.setDvThreshold(e.target.value)}/> % <button style={{float : "right"}} onClick={() => this.set_threshold("dv")} className={"btn btn-primary"}>Save</button>
+                            <input type={"number"} style={{width : "60px"}} max={100} min={0} value={this.props.logged_user.dv_threshold} onChange={(e) => this.props.setDvThreshold(e.target.value)}/> % <button style={{float : "right"}} onClick={(e) => this.set_threshold(e,"dv")} className={"btn btn-primary"}>Save</button>
                         </p>
                         <hr/>
+                    </form>
+                    <form onSubmit={(e) => this.set_threshold(e,"vp")}>
                         <p>If my downvoting power reaches 0, use my voting power to downvote when my power is above :
-                        <input type={"number"} style={{width : "60px"}} max={100} min={0} value={this.props.logged_user.vp_threshold} onChange={(e) => this.props.setVpThreshold(e.target.value)}/> % <button style={{float : "right"}} onClick={() => this.set_threshold("vp")} className={"btn btn-primary"}>Save</button>
+                            <input type={"number"} style={{width : "60px"}} max={100} min={0} value={this.props.logged_user.vp_threshold} onChange={(e) => this.props.setVpThreshold(e.target.value)}/> % <button style={{float : "right"}} onClick={(e) => this.set_threshold(e,"vp")} className={"btn btn-primary"}>Save</button>
                             <br/><small>This setting also applies when upvoting to counter downvotes</small>
                         </p>
                         <hr/>
+                    </form>
 
-                        <p>Only downvote if the post has more than  :
-                        <input type={"number"} style={{width : "60px"}} min={0} value={this.props.logged_user.min_payout} onChange={(e) => this.props.setMinPayout(e.target.value)}/>
-                        $ of pending payouts.
+                    <p>Only downvote if the post has more than  :
+                        <form onSubmit={this.save_min_payout}>
+                            <input type={"number"} style={{width : "60px"}} min={0} value={this.props.logged_user.min_payout} onChange={(e) => this.props.setMinPayout(e.target.value)}/>
+                            $ of pending payouts.
                             <button style={{float : "right"}} onClick={this.save_min_payout} className={"btn btn-primary"}>Save</button>
+                        </form>
                         <br/><small>Posts with 0$ payout won't be downvoted</small>
-                        </p>
-                        <hr/>
-                        <Tabs defaultActiveKey="trail" id="modal-tab" transition={false} >
+                    </p>
+                    <hr/>
+                    <Tabs defaultActiveKey="trail" id="modal-tab" transition={false} >
 
-                            <Tab eventKey="trail" title="Trail" >
-                                <h5> Follow downvote trail </h5>
-                                <p> Allows you to trail the downvotes of a specific account and thus downvote any content they downvote at a given rate relative to the size of their downvote.</p>
-                                <p>Example: If you choose to trail <b>@abuse.control</b> with rating 0.75, then if  <b>@abuse.control</b> gives a <b>50%</b> downvote to a post you will give the same post a <b>37.5%</b> downvote.</p>
+                        <Tab eventKey="trail" title="Trail" >
+                            <h5> Follow downvote trail </h5>
+                            <p> Allows you to trail the downvotes of a specific account and thus downvote any content they downvote at a given rate relative to the size of their downvote.</p>
+                            <p>Example: If you choose to trail <b>@abuse.control</b> with rating 0.75, then if  <b>@abuse.control</b> gives a <b>50%</b> downvote to a post you will give the same post a <b>37.5%</b> downvote.</p>
 
-                                <input type={"text"} placeholder={"username"} value={this.state.trail_username} onChange={(e) => this.setState({trail_username : e.target.value})}/>
-                                <input type={"number"} min={0.01} max={2.5} step={0.01} style={{width : "60px"}} value={this.state.trail_ratio} onChange={(e) => this.setState({trail_ratio : e.target.value})}/>
-                                <button className={"btn  btn-primary"} onClick={() => this.add_trail(1)}>Add</button>
+                            <form onSubmit={(e) => this.add_trail(e, 1)}>
+                            <input type={"text"} placeholder={"username"} value={this.state.trail_username} onChange={(e) => this.setState({trail_username : e.target.value})}/>
+                            <input type={"number"} min={0.01} max={2.5} step={0.01} style={{width : "60px"}} value={this.state.trail_ratio} onChange={(e) => this.setState({trail_ratio : e.target.value})}/>
+                            <button className={"btn  btn-primary"} onClick={(e) => this.add_trail(e,1)}>Add</button>
+                            </form>
+                            <table className="table">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Username</th>
+                                    <th scope="col">Ratio</th>
+                                    <th scope="col">Delete</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {this.render_positive_trails()}
 
-                                <table className="table">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col">Username</th>
-                                        <th scope="col">Ratio</th>
-                                        <th scope="col">Delete</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {this.render_positive_trails()}
+                                </tbody>
+                            </table>
 
-                                    </tbody>
-                                </table>
+                        </Tab>
 
-                            </Tab>
+                        <Tab eventKey="counter_upvotes" title="Counter upvotes " >
+                            <h5> Counter upvotes </h5>
+                            <p> Used to counteract upvotes from specified accounts, meaning that you will downvote anything that they choose to upvote at a given rate relative to their upvote. </p>
+                            <p>Example: If you choose to counter upvote <b>@baduser</b>r with rating 1.2, then if <b>@baduser</b> gives a 50% upvote to something, you will add a <b>60%</b> downvote to the same post or comment, while a rating of 0.5 would make you downvote <b>25%</b>, etc.</p>
+                            <form onSubmit={(e) => this.add_trail(e, -1)}>
+                            <input type={"text"} placeholder={"username"} value={this.state.trail_username} onChange={(e) => this.setState({trail_username : e.target.value})}/>
+                            <input type={"number"} min={0} max={2.5} step={0.1} style={{width : "60px"}} value={this.state.trail_ratio} onChange={(e) => this.setState({trail_ratio : e.target.value})}/>
+                            <button className={"btn btn-primary"} onClick={(e) => this.add_trail(e, -1)} >Add</button>
+                            </form>
+                            <table className="table">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Username</th>
+                                    <th scope="col">Ratio</th>
+                                    <th scope="col">Delete</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {this.render_negative_trails()}
 
-                            <Tab eventKey="counter_upvotes" title="Counter upvotes " >
-                                <h5> Counter upvotes </h5>
-                                <p> Used to counteract upvotes from specified accounts, meaning that you will downvote anything that they choose to upvote at a given rate relative to their upvote. </p>
-                                <p>Example: If you choose to counter upvote <b>@baduser</b>r with rating 1.2, then if <b>@baduser</b> gives a 50% upvote to something, you will add a <b>60%</b> downvote to the same post or comment, while a rating of 0.5 would make you downvote <b>25%</b>, etc.</p>
+                                </tbody>
+                            </table>
+                        </Tab>
+                        <Tab eventKey="counter_downvotes" title="Counter downvotes " >
+                            <h5> Counter downvotes </h5>
+                            <p> Used to counteract downvotes from specified accounts, meaning that you will upvote anything that they choose to downvote at a given rate relative to their downvote. </p>
+                            <p>Example: If you choose to counter downvote <b>@baduser</b>r with rating 1.2, then if <b>@baduser</b> gives a 50% downvote on something, you will do a <b>60%</b> upvote to the same post or comment, while a rating of 0.5 would make you upvote at <b>25%</b>, etc.</p>
+                            <form onSubmit={(e) => this.add_trail(e, 2)}>
+                            <input type={"text"} placeholder={"username"} value={this.state.trail_username} onChange={(e) => this.setState({trail_username : e.target.value})}/>
+                            <input type={"number"} min={0} max={2.5} step={0.1} style={{width : "60px"}} value={this.state.trail_ratio} onChange={(e) => this.setState({trail_ratio : e.target.value})}/>
+                            <button className={"btn btn-primary"} onClick={(e) => this.add_trail(e, 2)} >Add</button>
+                            </form>
+                            <table className="table">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Username</th>
+                                    <th scope="col">Ratio</th>
+                                    <th scope="col">Delete</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {this.render_counter_downvote_trail()}
 
-                                <input type={"text"} placeholder={"username"} value={this.state.trail_username} onChange={(e) => this.setState({trail_username : e.target.value})}/>
-                                <input type={"number"} min={0} max={2.5} step={0.1} style={{width : "60px"}} value={this.state.trail_ratio} onChange={(e) => this.setState({trail_ratio : e.target.value})}/>
-                                <button className={"btn btn-primary"} onClick={() => this.add_trail(-1)} >Add</button>
+                                </tbody>
+                            </table>
+                        </Tab>
+                        <Tab eventKey="whitelist" title="Whitelist" >
+                            <h5> Whitelist </h5>
+                            <p>You won't downvote the users in this list</p>
+                            <form onSubmit={this.add_whitelist}>
+                            <input type={"text"} placeholder={"username"} value={this.state.trail_username} onChange={(e) => this.setState({trail_username : e.target.value})}/>
+                            <button className={"btn btn-primary"} onClick={this.add_whitelist} >Add</button>
+                            </form>
+                            <table className="table">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Username</th>
+                                    <th scope="col">Delete</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {this.render_whitelist()}
 
-                                <table className="table">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col">Username</th>
-                                        <th scope="col">Ratio</th>
-                                        <th scope="col">Delete</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {this.render_negative_trails()}
+                                </tbody>
+                            </table>
+                        </Tab>
+                        <Tab eventKey="hitlist" title="Hit list" >
+                            <h5> Hist list </h5>
+                            <p>Downvote user using x% whenever his post or comment reaches more than y$ (the number of dollar is the one in the global settings) </p>
+                            <p>For instance you can configure the tool to downvote user @milkinguser whenever he makes more than 5$ on a post or comment with a 30% downvote</p>
+                            Downvote
+                            <form onSubmit={() => this.add_hitlist}>
+                            <input type={"text"} placeholder={"username"} value={this.state.trail_username} onChange={(e) => this.setState({trail_username : e.target.value})}/>
+                            With a
+                            <input type={"number"} style={{width : "60px"}}  min={1} max={100} value={this.state.hitlist_percent} onChange={(e) => this.setState({hitlist_percent : e.target.value})}/>
+                            % downvote if his post has a payout superior to
+                            <input type={"number"} style={{width : "60px"}}   value={this.state.hitlist_min_payout} onChange={(e) => this.setState({hitlist_min_payout : e.target.value})}/> $
 
-                                    </tbody>
-                                </table>
-                            </Tab>
-                            <Tab eventKey="counter_downvotes" title="Counter downvotes " >
-                                <h5> Counter downvotes </h5>
-                                <p> Used to counteract downvotes from specified accounts, meaning that you will upvote anything that they choose to downvote at a given rate relative to their downvote. </p>
-                                <p>Example: If you choose to counter downvote <b>@baduser</b>r with rating 1.2, then if <b>@baduser</b> gives a 50% downvote on something, you will do a <b>60%</b> upvote to the same post or comment, while a rating of 0.5 would make you upvote at <b>25%</b>, etc.</p>
-
-                                <input type={"text"} placeholder={"username"} value={this.state.trail_username} onChange={(e) => this.setState({trail_username : e.target.value})}/>
-                                <input type={"number"} min={0} max={2.5} step={0.1} style={{width : "60px"}} value={this.state.trail_ratio} onChange={(e) => this.setState({trail_ratio : e.target.value})}/>
-                                <button className={"btn btn-primary"} onClick={() => this.add_trail(2)} >Add</button>
-
-                                <table className="table">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col">Username</th>
-                                        <th scope="col">Ratio</th>
-                                        <th scope="col">Delete</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {this.render_counter_downvote_trail()}
-
-                                    </tbody>
-                                </table>
-                            </Tab>
-                            <Tab eventKey="whitelist" title="Whitelist" >
-                                <h5> Whitelist </h5>
-                                <p>You won't downvote the users in this list</p>
-
-                                <input type={"text"} placeholder={"username"} value={this.state.trail_username} onChange={(e) => this.setState({trail_username : e.target.value})}/>
-                                <button className={"btn btn-primary"} onClick={this.add_whitelist} >Add</button>
-
-                                <table className="table">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col">Username</th>
-                                        <th scope="col">Delete</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {this.render_whitelist()}
-
-                                    </tbody>
-                                </table>
-                            </Tab>
-                            <Tab eventKey="hitlist" title="Hit list" >
-                                <h5> Hist list </h5>
-                                <p>Downvote user using x% whenever his post or comment reaches more than y$ (the number of dollar is the one in the global settings) </p>
-                                <p>For instance you can configure the tool to downvote user @milkinguser whenever he makes more than 5$ on a post or comment with a 30% downvote</p>
-                                Downvote
-                                <input type={"text"} placeholder={"username"} value={this.state.trail_username} onChange={(e) => this.setState({trail_username : e.target.value})}/>
-                                With a
-                                <input type={"number"} style={{width : "60px"}}  min={1} max={100} value={this.state.hitlist_percent} onChange={(e) => this.setState({hitlist_percent : e.target.value})}/>
-                                % downvote if his post has a payout superior to
-                                <input type={"number"} style={{width : "60px"}}   value={this.state.hitlist_min_payout} onChange={(e) => this.setState({hitlist_min_payout : e.target.value})}/> $
-
-                                <button className={"btn btn-primary"} style={{marginLeft : "5px"}} onClick={this.add_hitlist} >Add</button>
-
-                                <table className="table">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col">Username</th>
-                                        <th scope="col">downvote percent</th>
-                                        <th scope="col">Minimum payout</th>
-                                        <th scope="col">Delete</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {this.render_hitlist()}
-                                    </tbody>
-                                </table>
-                            </Tab>
-                            <Tab eventKey="vote_history" title="Vote history" >
-                                <h5>Vote history </h5>
-                                <p>Here's the history of all the votes you made though this tool</p>
-                                {this.render_votes()}
-                            </Tab>
-                        </Tabs>
-                    </main>
-                </div>
-            )
+                            <button className={"btn btn-primary"} style={{marginLeft : "5px"}} onClick={this.add_hitlist} >Add</button>
+                            </form>
+                            <table className="table">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Username</th>
+                                    <th scope="col">downvote percent</th>
+                                    <th scope="col">Minimum payout</th>
+                                    <th scope="col">Delete</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {this.render_hitlist()}
+                                </tbody>
+                            </table>
+                        </Tab>
+                        <Tab eventKey="vote_history" title="Vote history" >
+                            <h5>Vote history </h5>
+                            <p>Here's the history of all the votes you made though this tool</p>
+                            {this.render_votes()}
+                        </Tab>
+                    </Tabs>
+                </main>
+            </div>
+        )
 
     }
 
