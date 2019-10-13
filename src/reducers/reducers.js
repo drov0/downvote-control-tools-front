@@ -36,7 +36,7 @@ const userReducer = (state  = "", action) => {
     return state;
 };
 
-const dataReducer = (state  = {negative_trail : "", positive_trail : "", counter_trail : "", whitelist : "", hitlist : ""}, action) => {
+const dataReducer = (state  = {negative_trail : "", positive_trail : "", counter_trail : "", whitelist : "", hitlist : "", vote_history : ""}, action) => {
 
     if (action.type === "FETCH_TRAILS")
     {
@@ -107,6 +107,42 @@ const dataReducer = (state  = {negative_trail : "", positive_trail : "", counter
     {
         let new_state = _.cloneDeep(state);
         new_state.hitlist = state.whitelist.filter(el => el.author !== action.payload.author);
+        return new_state
+    } else if (action.type === "FETCH_VOTES")
+    {
+        let new_state = _.cloneDeep(state);
+        new_state.vote_history = action.payload.map(el => {el.loading = false; return el});
+        return new_state
+    } else if (action.type === "UNVOTE")
+    {
+        let new_state = _.cloneDeep(state);
+        new_state.vote_history = state.vote_history.filter(el => el.author !== action.payload.author && el.permlink !== action.payload.permlink);
+        return new_state
+    } else if (action.type === "UNVOTING")
+    {
+        let new_state = _.cloneDeep(state);
+
+        for (let i = 0; i < new_state.vote_history.length; i++)
+        {
+            let vote = new_state.vote_history[i];
+
+            if (vote.author === action.payload.author && vote.permlink === action.payload.permlink)
+                new_state.vote_history[i].loading = true;
+        }
+
+        return new_state
+    } else if (action.type === "UNVOTE_FAIL")
+    {
+        let new_state = _.cloneDeep(state);
+
+        for (let i = 0; i < new_state.vote_history.length; i++)
+        {
+            let vote = new_state.vote_history[i];
+
+            if (vote.author === action.payload.author && vote.permlink === action.payload.permlink)
+                new_state.vote_history[i].loading = false;
+        }
+
         return new_state
     }
 

@@ -125,6 +125,19 @@ const fetchHitlist = (username, token, type) => async (dispatch) => {
         }
 };
 
+const fetchExecutedVotes = (username, token, type) => async (dispatch) => {
+
+        const response = (await backend.post('/settings/get_vote_history',
+            {username: username, token: token, type: type})).data;
+
+        if (response.status === "ok") {
+           return dispatch({
+                type: 'FETCH_VOTES',
+                payload: response.data
+            });
+        }
+};
+
 
 const addToTrail = (username, token, type,  trailed, ratio, trail_type) => async (dispatch) => {
 
@@ -315,9 +328,6 @@ const setMinPayout = (payout) => async (dispatch) => {
         });
 };
 
-
-
-
 const logout = (username, token, type) => async (dispatch) => {
     const cookies = new Cookies();
 
@@ -333,7 +343,30 @@ const logout = (username, token, type) => async (dispatch) => {
     });
 };
 
+const unvote = (username, token, type, author, permlink) => async (dispatch) => {
 
+    dispatch({
+        type: 'UNVOTING',
+        payload: {author: author, permlink: permlink}
+    });
+
+    let data = (await backend.post('/settings/unvote', {username, token, type, author, permlink})).data;
+
+    if (data.status === "ko")
+    {
+        dispatch({
+            type: 'UNVOTE_FAIL',
+            payload: {author: author, permlink: permlink}
+        });
+        toast.error(data.data);
+    } else {
+        toast.info("Successfully unvoted @"+author+"/"+permlink);
+        dispatch({
+            type: 'UNVOTE',
+            payload: {author: author, permlink: permlink}
+        });
+    }
+};
 
 const login_keychain = (username, encrypted_username) => async (dispatch) => {
 
@@ -403,6 +436,7 @@ export {
     removeWhitelist,
     fetchHitlist,
     removeHitlist,
-    addToHitlist
-
+    addToHitlist,
+    fetchExecutedVotes,
+    unvote,
 };

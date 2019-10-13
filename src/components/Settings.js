@@ -3,25 +3,21 @@ import {connect} from "react-redux";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
 import {} from "../actions/actions"
-import {login} from "../actions/actions";
-import {fetchLogin} from "../actions/actions";
-import {fetchTrails} from "../actions/actions";
-import {addToTrail} from "../actions/actions";
+import {login, fetchLogin, fetchTrails,setVpThreshold,fetchHitlist, removeHitlist,addToHitlist, addToTrail, removeTrail, saveThreshold, logout, setMinPayout, saveMinPayout, addToWhitelist, fetchWhitelist, removeWhitelist, setDvThreshold} from "../actions/actions";
 import {toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import {removeTrail} from "../actions/actions";
-import {saveThreshold} from "../actions/actions";
-import {logout} from "../actions/actions";
-import {setMinPayout} from "../actions/actions";
-import {saveMinPayout} from "../actions/actions";
-import {addToWhitelist} from "../actions/actions";
-import {fetchWhitelist} from "../actions/actions";
-import {removeWhitelist} from "../actions/actions";
-import {setDvThreshold} from "../actions/actions";
-import {setVpThreshold} from "../actions/actions";
-import {fetchHitlist} from "../actions/actions";
-import {removeHitlist} from "../actions/actions";
-import {addToHitlist} from "../actions/actions";
+import "@devexpress/dx-react-grid";
+import {
+    Grid, PagingPanel, SearchPanel,
+    Table, TableEditColumn, TableEditRow,
+    TableHeaderRow, Toolbar
+} from "@devexpress/dx-react-grid-bootstrap4";
+import {EditingState, IntegratedFiltering, IntegratedPaging, PagingState, SearchState} from "@devexpress/dx-react-grid";
+import '@devexpress/dx-react-grid-bootstrap4/dist/dx-react-grid-bootstrap4.css';
+import {fetchExecutedVotes} from "../actions/actions";
+import {unvote} from "../actions/actions";
+import { css } from '@emotion/core';
+import {ClipLoader, SyncLoader} from 'react-spinners';
 
 const Joi = require('joi');
 
@@ -50,6 +46,7 @@ class Settings extends React.Component
         this.props.fetchTrails(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type);
         this.props.fetchWhitelist(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type);
         this.props.fetchHitlist(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type);
+        this.props.fetchExecutedVotes(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type);
     };
 
 
@@ -188,6 +185,109 @@ class Settings extends React.Component
     {
         this.props.logout(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type);
     };
+
+    unvote = (username, permlink) =>
+    {
+
+        this.props.unvote(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type, username, permlink);
+    };
+
+    parse_vote_reason(reason, type)
+    {
+        try {
+            reason = JSON.parse(reason);
+        } catch (e) {
+            return {trailed : "error", reason : "error"}
+        }
+
+        if (type < 4 && reason.trail !== null)
+        {
+
+            let trail = reason.trail;
+
+            if (type === -1)
+                return {trailed : trail.trailed, reason : "counter upvote"};
+            else if (type === 1)
+                return {trailed : trail.trailed, reason : "trailed downvote"};
+            else if (type=== 2)
+                return {trailed : trail.trailed, reason : "countered downvote"};
+        } else if (type === 4 && reason.hitlist !== null)
+                return {trailed : reason.hitlist.author, reason : "hitlist"};
+
+        return {trailed : "error", reason : "error"}
+    }
+
+    renderRows()
+    {
+        let votes = this.props.data.vote_history;
+        let rows = [];
+
+        for (let i = 0; i < votes.length; i++) {
+
+            let button = "Unvote";
+
+            if (votes[i].loading === true)
+            {
+                button = <div className='sweet-loading'>
+                    <SyncLoader
+
+                        sizeUnit={"px"}
+                        size={4}
+                        color={'#ffffff'}
+                        loading={true}
+                    />
+                </div>
+            }
+
+            let reason = this.parse_vote_reason(votes[i].reason, votes[i].type);
+            rows.push({
+                author : votes[i].author,
+                permlink : <a target={"_blank"} href={"https://steemit.com/@"+votes[i].author+"/"+votes[i].permlink}> {votes[i].permlink}</a>,
+                percentage : votes[i].percentage/100+ " %",
+                trailed : reason.trailed,
+                reason : reason.reason,
+                unvote : <button className={"btn btn-primary"} style={{marginLeft : "5px"}} onClick={() => this.unvote(votes[i].author, votes[i].permlink)}>{button}</button> ,
+                })
+        }
+
+
+        return rows;
+
+    }
+
+    render_votes = () =>
+    {
+
+        let columns = [
+            { name: "author", title: "author" },
+            { name: "permlink", title: "permlink"},
+            { name: "percentage", title: "percentage"},
+            { name: "reason", title: "reason"},
+            { name: "trailed", title: "voter"},
+            { name: "unvote", title: " "},
+        ];
+
+        return (
+        <Grid rows={this.renderRows()} columns={columns}>
+            <SearchState />
+            <IntegratedFiltering />
+            <PagingState
+                defaultCurrentPage={0}
+                pageSize={15}
+            />
+
+            <IntegratedPaging />
+
+            <Table />
+            <Toolbar />
+            <SearchPanel />
+            <TableHeaderRow />
+            <PagingPanel />
+
+
+        </Grid>
+        )
+    }
 
     render() {
             return (
@@ -352,6 +452,11 @@ class Settings extends React.Component
                                     </tbody>
                                 </table>
                             </Tab>
+                            <Tab eventKey="vote_history" title="Vote history" >
+                                <h5>Vote history </h5>
+                                <p>Here's the history of all the votes you made though this tool</p>
+                                {this.render_votes()}
+                            </Tab>
                         </Tabs>
                     </main>
                 </div>
@@ -369,4 +474,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, {login, logout, fetchLogin,fetchWhitelist, fetchTrails, addToTrail, addToHitlist, removeHitlist, removeTrail, saveThreshold, setDvThreshold, setVpThreshold, setMinPayout, saveMinPayout, addToWhitelist, removeWhitelist, fetchHitlist})(Settings);
+export default connect(mapStateToProps, {login,unvote, logout, fetchLogin,fetchWhitelist,fetchExecutedVotes, fetchTrails, addToTrail, addToHitlist, removeHitlist, removeTrail, saveThreshold, setDvThreshold, setVpThreshold, setMinPayout, saveMinPayout, addToWhitelist, removeWhitelist, fetchHitlist})(Settings);
