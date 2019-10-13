@@ -317,21 +317,22 @@ class Settings extends React.Component
                         <h4>Global settings : </h4>
 
                         <p>Only use automatic downvote votes when power is above :
-                        <input type={"number"} style={{width : "60px"}} max={100} min={0} value={this.props.logged_user.dv_threshold} onChange={(e) => this.props.setDvThreshold(e.target.value)}/> % <button onClick={() => this.set_threshold("dv")} className={"btn btn-primary"}>Save</button>
+                        <input type={"number"} style={{width : "60px"}} max={100} min={0} value={this.props.logged_user.dv_threshold} onChange={(e) => this.props.setDvThreshold(e.target.value)}/> % <button style={{float : "right"}} onClick={() => this.set_threshold("dv")} className={"btn btn-primary"}>Save</button>
                         </p>
+                        <hr/>
                         <p>If my downvoting power reaches 0, use my voting power to downvote when my power is above :
-                        <input type={"number"} style={{width : "60px"}} max={100} min={0} value={this.props.logged_user.vp_threshold} onChange={(e) => this.props.setVpThreshold(e.target.value)}/> % <button onClick={() => this.set_threshold("vp")} className={"btn btn-primary"}>Save</button>
+                        <input type={"number"} style={{width : "60px"}} max={100} min={0} value={this.props.logged_user.vp_threshold} onChange={(e) => this.props.setVpThreshold(e.target.value)}/> % <button style={{float : "right"}} onClick={() => this.set_threshold("vp")} className={"btn btn-primary"}>Save</button>
                             <br/><small>This setting also applies when upvoting to counter downvotes</small>
                         </p>
+                        <hr/>
 
                         <p>Only downvote if the post has more than  :
                         <input type={"number"} style={{width : "60px"}} min={0} value={this.props.logged_user.min_payout} onChange={(e) => this.props.setMinPayout(e.target.value)}/>
                         $ of pending payouts.
-                            <button onClick={this.save_min_payout} className={"btn btn-primary"}>Save</button>
+                            <button style={{float : "right"}} onClick={this.save_min_payout} className={"btn btn-primary"}>Save</button>
                         <br/><small>Posts with 0$ payout won't be downvoted</small>
                         </p>
-                        <br/>
-
+                        <hr/>
                         <Tabs defaultActiveKey="trail" id="modal-tab" transition={false} >
 
                             <Tab eventKey="trail" title="Trail" >
