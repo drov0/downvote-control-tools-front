@@ -205,7 +205,7 @@ class Settings extends React.Component
             return {trailed : "error", reason : "error"}
         }
 
-        if (type < 4 && reason.trail !== null)
+        if (type < 3 && reason.trail !== null)
         {
 
             let trail = reason.trail;
@@ -216,7 +216,7 @@ class Settings extends React.Component
                 return {trailed : trail.trailed, reason : "trailed downvote"};
             else if (type=== 2)
                 return {trailed : trail.trailed, reason : "countered downvote"};
-        } else if (type === 4 && reason.hitlist !== null)
+        } else if (type === 3 && reason.hitlist !== null)
                 return {trailed : reason.hitlist.author, reason : "hitlist"};
 
         return {trailed : "error", reason : "error"}
