@@ -29,7 +29,7 @@ class Settings extends React.Component
 
     trailed_schema = Joi.object().keys({
         username: Joi.string().min(3).max(16).required(),
-        ratio: Joi.number().min(0.1).max(2.5),
+        ratio: Joi.number().min(0.01).max(2.5),
     });
 
     whitelist_schema = Joi.object().keys({
@@ -38,7 +38,7 @@ class Settings extends React.Component
 
     hitlist_schema = Joi.object().keys({
         username: Joi.string().min(3).max(16).required(),
-        percent: Joi.number().min(0.1).max(100),
+        percent: Joi.number().min(0.01).max(100),
         min_payout: Joi.number().min(0.01),
     });
 
