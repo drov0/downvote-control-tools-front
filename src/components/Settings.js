@@ -39,7 +39,7 @@ class Settings extends React.Component
     hitlist_schema = Joi.object().keys({
         username: Joi.string().min(3).max(16).required(),
         percent: Joi.number().min(0.1).max(100),
-        min_payout: Joi.number().min(0.1),
+        min_payout: Joi.number().min(0.01),
     });
 
     async componentDidMount() {
@@ -446,7 +446,7 @@ class Settings extends React.Component
                             <form onSubmit={() => this.add_hitlist}>
                             <input type={"text"} placeholder={"username"} value={this.state.trail_username} onChange={(e) => this.setState({trail_username : e.target.value})}/>
                             With a
-                            <input type={"number"} style={{width : "60px"}}  min={1} max={100} value={this.state.hitlist_percent} onChange={(e) => this.setState({hitlist_percent : e.target.value})}/>
+                            <input type={"number"} style={{width : "60px"}}  min={0.1} max={100} value={this.state.hitlist_percent} onChange={(e) => this.setState({hitlist_percent : e.target.value})}/>
                             % downvote if his post has a payout superior to
                             <input type={"number"} style={{width : "60px"}}   value={this.state.hitlist_min_payout} onChange={(e) => this.setState({hitlist_min_payout : e.target.value})}/> $
 
