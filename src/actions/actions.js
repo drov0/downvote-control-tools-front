@@ -8,8 +8,6 @@ var dsteem = require('dsteem');
 
 var client = new dsteem.Client('https://api.steemit.com');
 
-
-
 const fetchLogin = () => async (dispatch) => {
 
     const cookies = new Cookies();
@@ -279,33 +277,21 @@ const removeHitlist = (username, token, type, author) => async (dispatch) => {
     }
 };
 
-const saveThreshold = (username, token, type,  threshold, threshold_type) => async (dispatch) => {
-
-    const response = (await backend.post('/settings/update_threshold',
-        {username, token, type, threshold, threshold_type})).data;
+const saveSettings = (user) => async () => {
+    const response = (await backend.post('/settings/update_user_settings',
+        {   username : user.username,
+            token :user.token,
+            type : user.type,
+            settings : JSON.stringify({
+                dv_threshold: user.dv_threshold,
+                vp_threshold: user.vp_threshold,
+                min_payout : user.min_payout,
+            }),
+        })).data;
 
     if (response.status === "ok")
-        toast.info("Saved");
+        toast.info("Settings saved");
 };
-
-
-const saveMinPayout = (username, token, type,  min_payout) => async (dispatch) => {
-
-    const response = (await backend.post('/settings/update_min_payout',
-        {username, token, type, min_payout})).data;
-
-    if (response.status === "ok") {
-
-        toast.info("Saved");
-
-        return dispatch({
-            type: 'SET_PAYOUT',
-            payload: min_payout
-        });
-    }
-};
-
-
 
 const setDvThreshold = (threshold) => async (dispatch) => {
         return dispatch({
@@ -424,12 +410,11 @@ export {
     fetchTrails,
     addToTrail,
     removeTrail,
-    saveThreshold,
+    saveSettings,
     setDvThreshold,
     setVpThreshold,
     logout,
     setMinPayout,
-    saveMinPayout,
     login_keychain,
     addToWhitelist,
     fetchWhitelist,

@@ -2,7 +2,26 @@ import React from 'react';
 import {connect} from "react-redux";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
-import {login, fetchLogin, fetchTrails,fetchExecutedVotes, unvote, setVpThreshold,fetchHitlist, removeHitlist,addToHitlist, addToTrail, removeTrail, saveThreshold, logout, setMinPayout, saveMinPayout, addToWhitelist, fetchWhitelist, removeWhitelist, setDvThreshold} from "../actions/actions";
+import {
+    login,
+    fetchLogin,
+    fetchTrails,
+    fetchExecutedVotes,
+    unvote,
+    setVpThreshold,
+    fetchHitlist,
+    removeHitlist,
+    addToHitlist,
+    addToTrail,
+    removeTrail,
+    logout,
+    setMinPayout,
+    addToWhitelist,
+    fetchWhitelist,
+    removeWhitelist,
+    setDvThreshold,
+    saveSettings
+} from "../actions/actions";
 import {toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import "@devexpress/dx-react-grid";
@@ -16,9 +35,14 @@ const Joi = require('joi');
 
 class Settings extends React.Component
 {
-
     state = {trail_username : "", trail_ratio : 1, hitlist_percent : 50, hitlist_min_payout : 5};
 
+    async componentDidMount() {
+        this.props.fetchTrails(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type);
+        this.props.fetchWhitelist(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type);
+        this.props.fetchHitlist(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type);
+        this.props.fetchExecutedVotes(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type);
+    };
 
     trailed_schema = Joi.object().keys({
         username: Joi.string().min(3).max(16).required(),
@@ -34,13 +58,6 @@ class Settings extends React.Component
         percent: Joi.number().min(0.01).max(100),
         min_payout: Joi.number().min(0.01),
     });
-
-    async componentDidMount() {
-        this.props.fetchTrails(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type);
-        this.props.fetchWhitelist(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type);
-        this.props.fetchHitlist(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type);
-        this.props.fetchExecutedVotes(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type);
-    };
 
 
     remove_trail = (trailed, type) =>
@@ -58,13 +75,11 @@ class Settings extends React.Component
             this.props.removeHitlist(this.props.logged_user.username, this.props.logged_user.token,this.props.logged_user.type, author);
     };
 
-    set_threshold = (event, type) =>
+    save_settings = (event) =>
     {
         event.preventDefault();
-        if (type === "dv")
-            this.props.saveThreshold(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type,  this.props.logged_user.dv_threshold, type);
-        else if (type === "vp")
-            this.props.saveThreshold(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type,  this.props.logged_user.vp_threshold, type);
+
+        this.props.saveSettings(this.props.logged_user);
 
     };
 
@@ -321,28 +336,25 @@ class Settings extends React.Component
 
                     <h4>Global settings : </h4>
 
-                    <form onSubmit={(e) => this.set_threshold(e,"dv")}>
+                    <form onSubmit={(e) => this.save_settings(e)}>
                         <p>Only use automatic downvote votes when power is above :
-                            <input type={"number"} style={{width : "60px"}} max={100} min={0} value={this.props.logged_user.dv_threshold} onChange={(e) => this.props.setDvThreshold(e.target.value)}/> % <button style={{float : "right"}} onClick={(e) => this.set_threshold(e,"dv")} className={"btn btn-primary"}>Save</button>
+                            <input type={"number"} style={{width : "60px"}} max={100} min={0} value={this.props.logged_user.dv_threshold} onChange={(e) => this.props.setDvThreshold(e.target.value)}/> %
+
                         </p>
-                        <hr/>
-                    </form>
-                    <form onSubmit={(e) => this.set_threshold(e,"vp")}>
                         <p>If my downvoting power reaches 0, use my voting power to downvote when my power is above :
-                            <input type={"number"} style={{width : "60px"}} max={100} min={0} value={this.props.logged_user.vp_threshold} onChange={(e) => this.props.setVpThreshold(e.target.value)}/> % <button style={{float : "right"}} onClick={(e) => this.set_threshold(e,"vp")} className={"btn btn-primary"}>Save</button>
+                            <input type={"number"} style={{width : "60px"}} max={100} min={0} value={this.props.logged_user.vp_threshold} onChange={(e) => this.props.setVpThreshold(e.target.value)}/> %
                             <br/><small>This setting also applies when upvoting to counter downvotes</small>
                         </p>
-                        <hr/>
-                    </form>
 
                     <p>Only downvote if the post has more than  :
-                        <form onSubmit={this.save_min_payout}>
+
                             <input type={"number"} style={{width : "60px"}} min={0} value={this.props.logged_user.min_payout} onChange={(e) => this.props.setMinPayout(e.target.value)}/>
-                            $ of pending payouts.
-                            <button style={{float : "right"}} onClick={this.save_min_payout} className={"btn btn-primary"}>Save</button>
-                        </form>
+                        $ of pending payouts.
+
+                        <button style={{float : "right"}} onClick={(e) => this.save_settings(e)} className={"btn btn-primary"}>Save settings</button>
                         <br/><small>Posts with 0$ payout won't be downvoted</small>
                     </p>
+                    </form>
                     <hr/>
                     <Tabs defaultActiveKey="trail" id="modal-tab" transition={false} >
 
@@ -488,4 +500,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, {login,unvote, logout, fetchLogin,fetchWhitelist,fetchExecutedVotes, fetchTrails, addToTrail, addToHitlist, removeHitlist, removeTrail, saveThreshold, setDvThreshold, setVpThreshold, setMinPayout, saveMinPayout, addToWhitelist, removeWhitelist, fetchHitlist})(Settings);
+export default connect(mapStateToProps, {login,unvote, logout, fetchLogin,fetchWhitelist,fetchExecutedVotes,saveSettings, fetchTrails, addToTrail, addToHitlist, removeHitlist, removeTrail, setDvThreshold, setVpThreshold, setMinPayout, addToWhitelist, removeWhitelist, fetchHitlist})(Settings);
