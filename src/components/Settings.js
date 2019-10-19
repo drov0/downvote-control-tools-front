@@ -2,23 +2,16 @@ import React from 'react';
 import {connect} from "react-redux";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
-import {} from "../actions/actions"
-import {login, fetchLogin, fetchTrails,setVpThreshold,fetchHitlist, removeHitlist,addToHitlist, addToTrail, removeTrail, saveThreshold, logout, setMinPayout, saveMinPayout, addToWhitelist, fetchWhitelist, removeWhitelist, setDvThreshold} from "../actions/actions";
+import {login, fetchLogin, fetchTrails,fetchExecutedVotes, unvote, setVpThreshold,fetchHitlist, removeHitlist,addToHitlist, addToTrail, removeTrail, saveThreshold, logout, setMinPayout, saveMinPayout, addToWhitelist, fetchWhitelist, removeWhitelist, setDvThreshold} from "../actions/actions";
 import {toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import "@devexpress/dx-react-grid";
-import {
-    Grid, PagingPanel, SearchPanel,
-    Table, TableEditColumn, TableEditRow,
-    TableHeaderRow, Toolbar
-} from "@devexpress/dx-react-grid-bootstrap4";
-import {EditingState, IntegratedFiltering, IntegratedPaging, PagingState, SearchState} from "@devexpress/dx-react-grid";
+import {Grid, PagingPanel, SearchPanel,Table,TableHeaderRow, Toolbar} from "@devexpress/dx-react-grid-bootstrap4";
+import {IntegratedFiltering, IntegratedPaging, PagingState, SearchState, IntegratedSorting, SortingState} from "@devexpress/dx-react-grid";
 import '@devexpress/dx-react-grid-bootstrap4/dist/dx-react-grid-bootstrap4.css';
-import {fetchExecutedVotes} from "../actions/actions";
-import {unvote} from "../actions/actions";
-import { css } from '@emotion/core';
-import {ClipLoader, SyncLoader} from 'react-spinners';
+import {SyncLoader} from 'react-spinners';
 
+const dateFormat = require('dateformat');
 const Joi = require('joi');
 
 class Settings extends React.Component
@@ -244,6 +237,8 @@ class Settings extends React.Component
                 </div>
             }
 
+            let vote_date =  dateFormat(new Date(votes[i].date*1000), "dd/mm/yy HH:MM");
+
             let reason = this.parse_vote_reason(votes[i].reason, votes[i].type);
             rows.push({
                 author : votes[i].author,
@@ -251,6 +246,7 @@ class Settings extends React.Component
                 percentage : votes[i].percentage/100+ " %",
                 trailed : reason.trailed,
                 reason : reason.reason,
+                date : vote_date,
                 unvote : <button className={"btn btn-primary"} style={{marginLeft : "5px"}} onClick={() => this.unvote(votes[i].author, votes[i].permlink)}>{button}</button> ,
                 })
         }
@@ -264,6 +260,7 @@ class Settings extends React.Component
     {
 
         let columns = [
+            { name: "date", title: "date (d/m/y)"},
             { name: "author", title: "author" },
             { name: "permlink", title: "permlink"},
             { name: "percentage", title: "percentage"},
@@ -280,13 +277,16 @@ class Settings extends React.Component
                 defaultCurrentPage={0}
                 pageSize={15}
             />
-
+            <SortingState
+                defaultSorting={[{ columnName: 'date', direction: 'desc' }]}
+            />
+            <IntegratedSorting />
             <IntegratedPaging />
 
             <Table />
             <Toolbar />
             <SearchPanel />
-            <TableHeaderRow />
+            <TableHeaderRow showSortingControls />
             <PagingPanel />
 
 
