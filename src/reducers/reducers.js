@@ -106,7 +106,7 @@ const dataReducer = (state  = {negative_trail : "", positive_trail : "", counter
     } else if (action.type === "REMOVE_HITLIST")
     {
         let new_state = _.cloneDeep(state);
-        new_state.hitlist = state.whitelist.filter(el => el.author !== action.payload.author);
+        new_state.hitlist = state.hitlist.filter(el => el.author !== action.payload.author);
         return new_state
     } else if (action.type === "FETCH_VOTES")
     {
