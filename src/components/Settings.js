@@ -20,7 +20,7 @@ import {
     fetchWhitelist,
     removeWhitelist,
     setDvThreshold,
-    saveSettings
+    saveSettings, setRevote
 } from "../actions/actions";
 import {toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
@@ -350,9 +350,12 @@ class Settings extends React.Component
 
                             <input type={"number"} style={{width : "60px"}} min={0} value={this.props.logged_user.min_payout} onChange={(e) => this.props.setMinPayout(e.target.value)}/>
                         $ of pending payouts.
+                        <br/><small>Posts with 0$ payout won't be downvoted</small>
+                    </p>
+                    <p><input type={"checkbox"} checked={this.props.logged_user.revote === true} onChange={this.props.setRevote}/>   Re-vote if there is the opportunity to increase the upvote or downvote.
+                        <br />This is useful to counter people that will do a small upvote to bait auto downvotes and then revote with a higher percentage.
 
                         <button style={{float : "right"}} onClick={(e) => this.save_settings(e)} className={"btn btn-primary"}>Save settings</button>
-                        <br/><small>Posts with 0$ payout won't be downvoted</small>
                     </p>
                     </form>
                     <hr/>
@@ -500,4 +503,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, {login,unvote, logout, fetchLogin,fetchWhitelist,fetchExecutedVotes,saveSettings, fetchTrails, addToTrail, addToHitlist, removeHitlist, removeTrail, setDvThreshold, setVpThreshold, setMinPayout, addToWhitelist, removeWhitelist, fetchHitlist})(Settings);
+export default connect(mapStateToProps, {login,unvote, logout, fetchLogin,fetchWhitelist,fetchExecutedVotes,saveSettings,setRevote, fetchTrails, addToTrail, addToHitlist, removeHitlist, removeTrail, setDvThreshold, setVpThreshold, setMinPayout, addToWhitelist, removeWhitelist, fetchHitlist})(Settings);

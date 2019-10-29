@@ -33,6 +33,7 @@ const fetchLogin = () => async (dispatch) => {
                 vp_threshold : response.vp_threshold,
                 dv_threshold : response.dv_threshold,
                 min_payout : response.min_payout,
+                revote : response.revote,
                 type: cookies.get("type"),
 
             };
@@ -75,6 +76,7 @@ const login = (data) => async(dispatch) => {
         vp_threshold : data.vp_threshold,
         dv_threshold : data.dv_threshold,
         min_payout : data.min_payout,
+        revote : data.revote,
         type: "steemconnect"
     };
 
@@ -286,6 +288,7 @@ const saveSettings = (user) => async () => {
                 dv_threshold: user.dv_threshold,
                 vp_threshold: user.vp_threshold,
                 min_payout : user.min_payout,
+                revote : user.revote,
             }),
         })).data;
 
@@ -311,6 +314,13 @@ const setMinPayout = (payout) => async (dispatch) => {
         return dispatch({
             type: 'SET_PAYOUT',
             payload: payout
+        });
+};
+
+const setRevote = () => async (dispatch) => {
+
+        return dispatch({
+            type: 'SET_REVOTE',
         });
 };
 
@@ -388,7 +398,8 @@ const login_keychain = (username, encrypted_username) => async (dispatch) => {
             vp_threshold : data.vp_threshold,
             dv_threshold : data.dv_threshold,
             min_payout : data.min_payout,
-            type : "keychain"
+            type : "keychain",
+            revote : data.revote,
         };
 
         dispatch({
@@ -424,4 +435,5 @@ export {
     addToHitlist,
     fetchExecutedVotes,
     unvote,
+    setRevote,
 };

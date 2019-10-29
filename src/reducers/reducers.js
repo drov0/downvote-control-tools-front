@@ -31,6 +31,16 @@ const userReducer = (state  = "", action) => {
 
         new_state.min_payout = action.payload;
         return new_state
+    } else if (action.type === "SET_REVOTE" )
+    {
+        let new_state = _.cloneDeep(state);
+
+        if (state.revote === undefined)
+            new_state.revote = true;
+        else
+            new_state.revote = !state.revote;
+
+        return new_state
     }
 
     return state;
