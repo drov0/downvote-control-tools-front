@@ -46,7 +46,7 @@ const userReducer = (state  = "", action) => {
     return state;
 };
 
-const dataReducer = (state  = {negative_trail : "", positive_trail : "", counter_trail : "", whitelist : "", hitlist : "", vote_history : ""}, action) => {
+const dataReducer = (state  = {negative_trail : "", positive_trail : "", counter_trail : "", whitelist : "", hitlist : "", vote_history : "", counter_dv_blacklist : ""}, action) => {
 
     if (action.type === "FETCH_TRAILS")
     {
@@ -93,10 +93,20 @@ const dataReducer = (state  = {negative_trail : "", positive_trail : "", counter
         let new_state = _.cloneDeep(state);
         new_state.whitelist = action.payload;
         return new_state
+    }else if (action.type === "FETCH_COUNTER_DV_BLACKLIST")
+    {
+        let new_state = _.cloneDeep(state);
+        new_state.counter_dv_blacklist = action.payload;
+        return new_state
     } else if (action.type === "ADD_WHITELIST")
     {
         let new_state = _.cloneDeep(state);
         new_state.whitelist.push(action.payload);
+        return new_state
+    } else if (action.type === "ADD_COUNTER_DV_BLACKLIST")
+    {
+        let new_state = _.cloneDeep(state);
+        new_state.counter_dv_blacklist.push(action.payload);
         return new_state
     } else if (action.type === "ADD_HITLIST")
     {
@@ -107,6 +117,11 @@ const dataReducer = (state  = {negative_trail : "", positive_trail : "", counter
     {
         let new_state = _.cloneDeep(state);
         new_state.whitelist = state.whitelist.filter(el => el.trailed !== action.payload.trailed);
+        return new_state
+    }  else if (action.type === "REMOVE_COUNTER_DV_BLACKLIST")
+    {
+        let new_state = _.cloneDeep(state);
+        new_state.counter_dv_blacklist = state.counter_dv_blacklist.filter(el => el.trailed !== action.payload.trailed);
         return new_state
     } else if (action.type === "FETCH_HITLIST")
     {

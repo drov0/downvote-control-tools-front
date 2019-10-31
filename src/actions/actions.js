@@ -112,6 +112,19 @@ const fetchWhitelist = (username, token, type) => async (dispatch) => {
         }
 };
 
+const fetchCounterDvBlacklist = (username, token, type) => async (dispatch) => {
+
+        const response = (await backend.post('/settings/get_counter_dv_blacklist',
+            {username: username, token: token, type: type})).data;
+
+        if (response.status === "ok") {
+           return dispatch({
+                type: 'FETCH_COUNTER_DV_BLACKLIST',
+                payload: response.data
+            });
+        }
+};
+
 const fetchHitlist = (username, token, type) => async (dispatch) => {
 
         const response = (await backend.post('/settings/get_hitlist',
@@ -201,6 +214,36 @@ const addToWhitelist = (username, token, type, trailed) => async (dispatch) => {
 };
 
 
+const addToCounterDvBlacklist = (username, token, type, trailed) => async (dispatch) => {
+    let account = await client.database.getAccounts([trailed]);
+
+    if (account.length === 0)
+    {
+        toast.error("User "+ trailed + " doesn't exists");
+        return;
+    }
+
+    const response = (await backend.post('/settings/add_counter_dv_blacklist',
+        {username: username, token: token, type, trailed})).data;
+
+    if (response.status === "ok") {
+        return dispatch({
+            type: 'ADD_COUNTER_DV_BLACKLIST',
+            payload: {
+                username,
+                trailed
+            }
+        });
+    } else
+    {
+        if (response.error === "already exists")
+        {
+            toast.error("This user is already in the counter downvote blacklist")
+        }
+    }
+};
+
+
 const addToHitlist = (username, token, type, author, percent, min_payout) => async (dispatch) => {
     let account = await client.database.getAccounts([author]);
 
@@ -257,6 +300,21 @@ const removeWhitelist = (username, token, type, trailed) => async (dispatch) => 
     if (response.status === "ok") {
         return dispatch({
             type: 'REMOVE_WHITELIST',
+            payload: {
+                trailed
+            }
+        });
+    }
+};
+
+const removeCounterDvBlacklist = (username, token, type, trailed) => async (dispatch) => {
+
+    const response = (await backend.post('/settings/remove_counter_dv_blacklist',
+        {username: username, token: token, type, trailed})).data;
+
+    if (response.status === "ok") {
+        return dispatch({
+            type: 'REMOVE_COUNTER_DV_BLACKLIST',
             payload: {
                 trailed
             }
@@ -436,4 +494,9 @@ export {
     fetchExecutedVotes,
     unvote,
     setRevote,
+    addToCounterDvBlacklist,
+    fetchCounterDvBlacklist,
+    removeCounterDvBlacklist
+
+
 };

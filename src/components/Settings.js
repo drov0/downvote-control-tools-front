@@ -20,7 +20,7 @@ import {
     fetchWhitelist,
     removeWhitelist,
     setDvThreshold,
-    saveSettings, setRevote
+    saveSettings, setRevote, addToCounterDvBlacklist, fetchCounterDvBlacklist, removeCounterDvBlacklist
 } from "../actions/actions";
 import {toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
@@ -41,6 +41,7 @@ class Settings extends React.Component
         this.props.fetchTrails(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type);
         this.props.fetchWhitelist(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type);
         this.props.fetchHitlist(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type);
+        this.props.fetchCounterDvBlacklist(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type);
         this.props.fetchExecutedVotes(this.props.logged_user.username, this.props.logged_user.token, this.props.logged_user.type);
     };
 
@@ -50,6 +51,10 @@ class Settings extends React.Component
     });
 
     whitelist_schema = Joi.object().keys({
+        username: Joi.string().min(3).max(16).required(),
+    });
+
+    counter_dv_blacklist_schema = Joi.object().keys({
         username: Joi.string().min(3).max(16).required(),
     });
 
@@ -68,6 +73,11 @@ class Settings extends React.Component
     remove_whitelist = (author) =>
     {
             this.props.removeWhitelist(this.props.logged_user.username, this.props.logged_user.token,this.props.logged_user.type, author);
+    };
+
+    remove_counter_dv_blacklist = (author) =>
+    {
+            this.props.removeCounterDvBlacklist(this.props.logged_user.username, this.props.logged_user.token,this.props.logged_user.type, author);
     };
 
     remove_hitlist = (author) =>
@@ -132,6 +142,20 @@ class Settings extends React.Component
         return rows
     };
 
+    render_counter_downvote_blacklist = () =>
+    {
+        let rows = [];
+
+        for (let i = 0; i < this.props.data.counter_dv_blacklist.length; i++) {
+            rows.push(<tr>
+                <td>{this.props.data.counter_dv_blacklist[i].trailed}</td>
+                <td><button className={"btn btn-primary"} onClick={() => this.remove_counter_dv_blacklist(this.props.data.counter_dv_blacklist[i].trailed)}>Delete</button></td>
+            </tr>)
+        }
+
+        return rows
+    };
+
     render_hitlist = () =>
     {
         let rows = [];
@@ -179,6 +203,17 @@ class Settings extends React.Component
 
         if (test.error === null)
             this.props.addToWhitelist(this.props.logged_user.username, this.props.logged_user.token,this.props.logged_user.type, this.state.trail_username);
+        else
+            toast.error(test.error.details[0].message);
+    };
+
+    add_counter_dv_blacklist = (event) =>
+    {
+        event.preventDefault();
+        let test = Joi.validate({username : this.state.trail_username}, this.counter_dv_blacklist_schema);
+
+        if (test.error === null)
+            this.props.addToCounterDvBlacklist(this.props.logged_user.username, this.props.logged_user.token,this.props.logged_user.type, this.state.trail_username);
         else
             toast.error(test.error.details[0].message);
     };
@@ -433,6 +468,26 @@ class Settings extends React.Component
                                 </tbody>
                             </table>
                         </Tab>
+                        <Tab eventKey="counter_dv_blacklist" title="Counter downvotes blacklist" >
+                            <h5> Counter downvotes blacklist </h5>
+                            <p>Counter downvotes author blacklist, you won't counter the downvotes if the reciever of the vote is in this list. Separate each user by a comma <br/></p>
+                            <form onSubmit={this.add_counter_dv_blacklist}>
+                            <input type={"text"} placeholder={"username"} value={this.state.trail_username} onChange={(e) => this.setState({trail_username : e.target.value})}/>
+                            <button className={"btn btn-primary"} onClick={this.add_counter_dv_blacklist} >Add</button>
+                            </form>
+                            <table className="table">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Username</th>
+                                    <th scope="col">Delete</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {this.render_counter_downvote_blacklist()}
+
+                                </tbody>
+                            </table>
+                        </Tab>
                         <Tab eventKey="whitelist" title="Whitelist" >
                             <h5> Whitelist </h5>
                             <p>You won't downvote the users in this list</p>
@@ -503,4 +558,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, {login,unvote, logout, fetchLogin,fetchWhitelist,fetchExecutedVotes,saveSettings,setRevote, fetchTrails, addToTrail, addToHitlist, removeHitlist, removeTrail, setDvThreshold, setVpThreshold, setMinPayout, addToWhitelist, removeWhitelist, fetchHitlist})(Settings);
+export default connect(mapStateToProps, {login,unvote,fetchCounterDvBlacklist,removeCounterDvBlacklist, logout, fetchLogin,fetchWhitelist,addToCounterDvBlacklist,fetchExecutedVotes,saveSettings,setRevote, fetchTrails, addToTrail, addToHitlist, removeHitlist, removeTrail, setDvThreshold, setVpThreshold, setMinPayout, addToWhitelist, removeWhitelist, fetchHitlist})(Settings);

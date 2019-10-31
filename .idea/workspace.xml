@@ -29,7 +29,7 @@
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../steempress-twoway-api" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -129,7 +129,11 @@
       <workItem from="1571685448475" duration="599000" />
       <workItem from="1571858644517" duration="1630000" />
       <workItem from="1571956014706" duration="186000" />
-      <workItem from="1572302992783" duration="3476000" />
+      <workItem from="1572302992783" duration="4018000" />
+      <workItem from="1572373475530" duration="1201000" />
+      <workItem from="1572382433254" duration="1383000" />
+      <workItem from="1572474723920" duration="630000" />
+      <workItem from="1572552370323" duration="3106000" />
     </task>
     <servers />
   </component>
