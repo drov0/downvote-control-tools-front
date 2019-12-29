@@ -29,8 +29,8 @@ import {Grid, PagingPanel, SearchPanel,Table,TableHeaderRow, Toolbar} from "@dev
 import {IntegratedFiltering, IntegratedPaging, PagingState, SearchState, IntegratedSorting, SortingState} from "@devexpress/dx-react-grid";
 import '@devexpress/dx-react-grid-bootstrap4/dist/dx-react-grid-bootstrap4.css';
 import {SyncLoader} from 'react-spinners';
+import moment from 'moment';
 
-const dateFormat = require('dateformat');
 const Joi = require('joi');
 
 class Settings extends React.Component
@@ -250,7 +250,6 @@ class Settings extends React.Component
 
         if (type < 3 && reason.trail !== null)
         {
-
             let trail = reason.trail;
 
             if (type === -1)
@@ -287,7 +286,7 @@ class Settings extends React.Component
                 </div>
             }
 
-            let vote_date =  dateFormat(new Date(votes[i].date*1000), "dd/mm/yy HH:MM");
+            let vote_date =  moment.unix(votes[i].date).format("DD/MM/YY HH:mm");
 
             let reason = this.parse_vote_reason(votes[i].reason, votes[i].type);
             rows.push({
@@ -306,8 +305,16 @@ class Settings extends React.Component
 
     }
 
+    compareDates = (a, b) => {
+        return (moment(a, "DD/MM/YY HH:mm").unix()  < moment(b, "DD/MM/YY HH:mm").unix()) ? -1 : 1;
+    };
+
     render_votes = () =>
     {
+
+        const integratedSortingColumnExtensions = [
+            { columnName: 'date', compare: this.compareDates },
+        ];
 
         let columns = [
             { name: "date", title: "date (d/m/y)"},
@@ -330,7 +337,7 @@ class Settings extends React.Component
             <SortingState
                 defaultSorting={[{ columnName: 'date', direction: 'desc' }]}
             />
-            <IntegratedSorting />
+            <IntegratedSorting columnExtensions={integratedSortingColumnExtensions}/>
             <IntegratedPaging />
 
             <Table />
