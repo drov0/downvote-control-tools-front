@@ -292,7 +292,7 @@ class Settings extends React.Component
             rows.push({
                 author : votes[i].author,
                 permlink : <a target={"_blank"} href={"https://steemit.com/@"+votes[i].author+"/"+votes[i].permlink}> {votes[i].permlink}</a>,
-                percentage : votes[i].percentage/100+ " %",
+                percentage : (reason.reason !== "hitlist" ? votes[i].percentage/100+ " %" : votes[i].percentage+ " %"),
                 trailed : reason.trailed,
                 reason : reason.reason,
                 date : vote_date,
