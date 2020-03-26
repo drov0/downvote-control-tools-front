@@ -6,8 +6,8 @@
     "@devexpress/dx-react-core": "^2.1.2",
     "@devexpress/dx-react-grid": "^2.1.2",
     "@devexpress/dx-react-grid-bootstrap4": "^2.1.2",
+    "@hivechain/dhive": "^0.13.0",
     "axios": "^0.19.0",
-    "dsteem": "^0.11.3",
     "joi": "^14.3.1",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
@@ -22,10 +22,12 @@
     "react-toastify": "^5.3.2",
     "redux": "^4.0.4",
     "redux-thunk": "^2.3.0",
+    "source-map-explorer": "^2.1.2",
     "steem": "^0.7.7",
     "universal-cookie": "^4.0.2"
   },
   "scripts": {
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

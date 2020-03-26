@@ -2,12 +2,12 @@ import React from "react";
 import {login, login_keychain} from "../actions/actions"
 import {connect} from "react-redux";
 import backend from "../api/backend";
-const dsteem = require('dsteem');
+const dhive = require('@hivechain/dhive');
 
 class LoginParking extends React.Component {
 
     state = {username : "", error : "", loginType : ""};
-    client = new dsteem.Client('https://api.steemit.com');
+    client = new dhive.Client('https://anyx.io');
 
     login_steemconnect = () =>
     {

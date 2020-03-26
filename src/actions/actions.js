@@ -4,9 +4,9 @@ import {toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.min.css';
 
 const utils = require("../api/utils");
-var dsteem = require('dsteem');
 
-var client = new dsteem.Client('https://api.steemit.com');
+var dhive = require('@hivechain/dhive');
+var client = new dhive.Client('https://anyx.io');
 
 const fetchLogin = () => async (dispatch) => {
 
