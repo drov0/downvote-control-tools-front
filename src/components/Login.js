@@ -9,7 +9,7 @@ class LoginParking extends React.Component {
     state = {username : "", error : "", loginType : ""};
     client = new dhive.Client('https://anyx.io');
 
-    login_steemconnect = () =>
+    login_hivesigner = () =>
     {
         window.open(process.env.NODE_ENV ===  "production" ? 'https://back.downvotecontrol.com/auth' : "http://localhost:4002/auth",'',' scrollbars=yes,menubar=no,width=447,height=614, resizable=yes,toolbar=no,location=no,status=no')
     };
@@ -100,14 +100,14 @@ class LoginParking extends React.Component {
 
                         <span style={{color : "red"}}>{this.state.error}</span>
 
-                        <button type={"button"} className="btn btn-primary " onClick={this.login_steemconnect} style={{
+                        <button type={"button"} className="btn btn-primary " onClick={this.login_hivesigner} style={{
                             backgroundColor: "white",
                             color: "#999999",
                             width: "235px",
                             marginTop: "20px",
                             border: "1px solid #999999",
                             borderRadius: "0"
-                        }}>Log in with SteemConnect
+                        }}>Log in with hivesigner
                         </button>
                         <button type={"button"} className="btn btn-primary " onClick={this.display_login_keychain} style={{
                             backgroundColor: "white",

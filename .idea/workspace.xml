@@ -34,7 +34,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../downvote-control-tools-back" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -162,7 +162,8 @@
       <workItem from="1577610015414" duration="1273000" />
       <workItem from="1577624220299" duration="722000" />
       <workItem from="1577692235215" duration="673000" />
-      <workItem from="1585256423305" duration="137000" />
+      <workItem from="1585256423305" duration="1450000" />
+      <workItem from="1585261753615" duration="599000" />
     </task>
     <servers />
   </component>
@@ -187,13 +188,13 @@
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
     <state x="2589" y="244" width="642" height="626" key="#analyze/1920.0.1920.1080/0.27.1920.1053/3840.0.1920.1080@1920.0.1920.1080" timestamp="1577610608740" />
-    <state x="2698" y="311" width="424" height="491" key="FileChooserDialogImpl" timestamp="1577607981983">
+    <state x="2698" y="311" width="424" height="491" key="FileChooserDialogImpl" timestamp="1585259645943">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state x="2698" y="311" width="424" height="491" key="FileChooserDialogImpl/1920.0.1920.1080/0.27.1920.1053/3840.0.1920.1080@1920.0.1920.1080" timestamp="1577607981983" />
-    <state x="2563" y="289" width="863" height="646" key="find.popup" timestamp="1585256455000">
+    <state x="2698" y="311" width="424" height="491" key="FileChooserDialogImpl/1920.0.1920.1080/0.27.1920.1053/3840.0.1920.1080@1920.0.1920.1080" timestamp="1585259645943" />
+    <state x="2563" y="289" width="863" height="646" key="find.popup" timestamp="1585260855180">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state x="2563" y="289" width="863" height="646" key="find.popup/1920.0.1920.1080/0.27.1920.1053/3840.0.1920.1080@1920.0.1920.1080" timestamp="1585256455000" />
+    <state x="2563" y="289" width="863" height="646" key="find.popup/1920.0.1920.1080/0.27.1920.1053/3840.0.1920.1080@1920.0.1920.1080" timestamp="1585260855180" />
   </component>
 </project>

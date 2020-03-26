@@ -60,7 +60,7 @@ const login = (data) => async(dispatch) => {
 
     cookies.set('username', data.username, { path: '/', expires : next_week});
     cookies.set('token', data.token, { path: '/', expires : next_week});
-    cookies.set('type', "steemconnect", { path: '/', expires : next_week});
+    cookies.set('type', "hivesigner", { path: '/', expires : next_week});
 
     let steem_data = await client.database.getAccounts([data.username]);
 
@@ -77,7 +77,7 @@ const login = (data) => async(dispatch) => {
         dv_threshold : data.dv_threshold,
         min_payout : data.min_payout,
         revote : data.revote,
-        type: "steemconnect"
+        type: "hivesigner"
     };
 
     dispatch({
