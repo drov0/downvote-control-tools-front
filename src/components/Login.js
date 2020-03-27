@@ -95,7 +95,7 @@ class LoginParking extends React.Component {
                     <div id="formContent">
 
                         <div className="fadeIn first">
-                            <img src="./Steem_Symbol_Gradient.png" alt="steem icon" style={{width: "150px"}}/>
+                            <img src="./hive_symbol.png" alt="steem icon" style={{width: "150px"}}/>
                         </div>
 
                         <span style={{color : "red"}}>{this.state.error}</span>
@@ -130,7 +130,7 @@ class LoginParking extends React.Component {
                     <div id="formContent">
 
                         <div className="fadeIn first">
-                            <img src="./Steem_Symbol_Gradient.png" alt="steem icon" style={{width: "150px"}}/>
+                            <img src="./hive_symbol.png" alt="steem icon" style={{width: "150px"}}/>
                         </div>
 
                         <br />
