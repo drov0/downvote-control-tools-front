@@ -17,16 +17,16 @@ class LoginParking extends React.Component {
     display_login_keychain = () =>
     {
 
-        if(window.steem_keychain) {
+        if(window.hive_keychain) {
 
-            let keychain = window.steem_keychain
+            let keychain = window.hive_keychain
 
             keychain.requestHandshake(() => {
                 this.setState({loginType :  "keychain"});
             });
 
         } else {
-            this.setState({error : "You do not have steem keychain installed"});
+            this.setState({error : "You do not have hive keychain installed"});
         }
     };
 
@@ -34,7 +34,7 @@ class LoginParking extends React.Component {
     send_login_token = async () =>
     {
 
-        let keychain = window.steem_keychain;
+        let keychain = window.hive_keychain;
 
 
         let memo = (await backend.post('/auth/keychain/fetch_memo', {username: this.state.username})).data;
@@ -59,8 +59,8 @@ class LoginParking extends React.Component {
         event.preventDefault();
 
 
-        if(window.steem_keychain) {
-            let keychain = window.steem_keychain;
+        if(window.hive_keychain) {
+            let keychain = window.hive_keychain;
 
             let data = await this.client.database.getAccounts([this.state.username]);
             if (data.length === 1) {
@@ -80,10 +80,10 @@ class LoginParking extends React.Component {
                 }
             } else
             {
-                this.setState({error : "Steem user not found"});
+                this.setState({error : "Hive user not found"});
             }
         } else {
-            this.setState({error : "You do not have steem keychain installed"});
+            this.setState({error : "You do not have hive keychain installed"});
         }
     };
 
@@ -95,7 +95,7 @@ class LoginParking extends React.Component {
                     <div id="formContent">
 
                         <div className="fadeIn first">
-                            <img src="./hive_symbol.png" alt="steem icon" style={{width: "150px"}}/>
+                            <img src="./hive_symbol.png" alt="hive icon" style={{width: "150px"}}/>
                         </div>
 
                         <span style={{color : "red"}}>{this.state.error}</span>
@@ -130,7 +130,7 @@ class LoginParking extends React.Component {
                     <div id="formContent">
 
                         <div className="fadeIn first">
-                            <img src="./hive_symbol.png" alt="steem icon" style={{width: "150px"}}/>
+                            <img src="./hive_symbol.png" alt="hive icon" style={{width: "150px"}}/>
                         </div>
 
                         <br />

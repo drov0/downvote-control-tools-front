@@ -20,16 +20,16 @@ const fetchLogin = () => async (dispatch) => {
 
         if (response.status === "ok") {
 
-            let steem_data = await client.database.getAccounts([cookies.get("username")]);
+            let hive_data = await client.database.getAccounts([cookies.get("username")]);
 
-            steem_data = steem_data[0];
+            hive_data = hive_data[0];
 
             logged_user = {
                 username: cookies.get("username"),
                 token: cookies.get("token"),
-                steem_data : steem_data,
-                voting_power : Math.ceil(utils.getvotingpower(steem_data)*100)/100,
-                downvoting_power : Math.ceil(utils.downvotingpower(steem_data)*100)/100,
+                hive_data : hive_data,
+                voting_power : Math.ceil(utils.getvotingpower(hive_data)*100)/100,
+                downvoting_power : Math.ceil(utils.downvotingpower(hive_data)*100)/100,
                 vp_threshold : response.vp_threshold,
                 dv_threshold : response.dv_threshold,
                 min_payout : response.min_payout,
@@ -62,17 +62,17 @@ const login = (data) => async(dispatch) => {
     cookies.set('token', data.token, { path: '/', expires : next_week});
     cookies.set('type', "hivesigner", { path: '/', expires : next_week});
 
-    let steem_data = await client.database.getAccounts([data.username]);
+    let hive_data = await client.database.getAccounts([data.username]);
 
-    steem_data = steem_data[0];
+    hive_data = hive_data[0];
 
     let logged_user = {
         username : data.username,
         token : data.token,
         avatar: profile_image,
-        steem_data : steem_data,
-        voting_power : Math.ceil(utils.getvotingpower(steem_data)*100)/100,
-        downvoting_power : Math.ceil(utils.downvotingpower(steem_data)*100)/100,
+        hive_data : hive_data,
+        voting_power : Math.ceil(utils.getvotingpower(hive_data)*100)/100,
+        downvoting_power : Math.ceil(utils.downvotingpower(hive_data)*100)/100,
         vp_threshold : data.vp_threshold,
         dv_threshold : data.dv_threshold,
         min_payout : data.min_payout,
@@ -442,17 +442,17 @@ const login_keychain = (username, encrypted_username) => async (dispatch) => {
         cookies.set('token', data.token, { path: '/', expires : next_week});
         cookies.set('type', "keychain", { path: '/', expires : next_week});
 
-        let steem_data = await client.database.getAccounts([username]);
+        let hive_data = await client.database.getAccounts([username]);
 
-        steem_data = steem_data[0];
+        hive_data = hive_data[0];
 
         let logged_user = {
             username : username,
             token : data.token,
             avatar: profile_image,
-            steem_data : steem_data,
-            voting_power : Math.ceil(utils.getvotingpower(steem_data)*100)/100,
-            downvoting_power : Math.ceil(utils.downvotingpower(steem_data)*100)/100,
+            hive_data : hive_data,
+            voting_power : Math.ceil(utils.getvotingpower(hive_data)*100)/100,
+            downvoting_power : Math.ceil(utils.downvotingpower(hive_data)*100)/100,
             vp_threshold : data.vp_threshold,
             dv_threshold : data.dv_threshold,
             min_payout : data.min_payout,
