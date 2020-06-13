@@ -291,7 +291,7 @@ class Settings extends React.Component
             let reason = this.parse_vote_reason(votes[i].reason, votes[i].type);
             rows.push({
                 author : votes[i].author,
-                permlink : <a target={"_blank"} href={"https://steemit.com/@"+votes[i].author+"/"+votes[i].permlink}> {votes[i].permlink}</a>,
+                permlink : <a target={"_blank"} href={"https://hive.blog/@"+votes[i].author+"/"+votes[i].permlink}> {votes[i].permlink}</a>,
                 percentage : (reason.reason !== "hitlist" ? votes[i].percentage/100+ " %" : votes[i].percentage+ " %"),
                 trailed : reason.trailed,
                 reason : reason.reason,
