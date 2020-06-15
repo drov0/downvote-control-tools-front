@@ -291,7 +291,7 @@ class Settings extends React.Component
             let reason = this.parse_vote_reason(votes[i].reason, votes[i].type);
             rows.push({
                 author : votes[i].author,
-                permlink : <a target={"_blank"} href={"https://hive.blog/@"+votes[i].author+"/"+votes[i].permlink}> {votes[i].permlink}</a>,
+                permlink : <span><a rel="noopener noreferrer" target={"_blank"} href={"https://hive.blog/@"+votes[i].author+"/"+votes[i].permlink}> {votes[i].permlink}</a> <br/> <a style={{fontSize:"10px", position: "relative", top: "-10px"}} rel="noopener noreferrer" target={"_blank"} href={"https://hiveblocks.com/@"+votes[i].author+"/"+votes[i].permlink}> view in hiveblocks</a></span>,
                 percentage : (reason.reason !== "hitlist" ? votes[i].percentage/100+ " %" : votes[i].percentage+ " %"),
                 trailed : reason.trailed,
                 reason : reason.reason,
@@ -432,7 +432,11 @@ class Settings extends React.Component
                         <Tab eventKey="counter_upvotes" title="Counter upvotes " >
                             <h5> Counter upvotes </h5>
                             <p> Used to counteract upvotes from specified accounts, meaning that you will downvote anything that they choose to upvote at a given rate relative to their upvote. </p>
-                            <p>Example: If you choose to counter upvote <b>@baduser</b>r with rating 1.2, then if <b>@baduser</b> gives a 50% upvote to something, you will add a <b>60%</b> downvote to the same post or comment, while a rating of 0.5 would make you downvote <b>25%</b>, etc.</p>
+                            <p>Example: If you choose to counter upvote <b>@baduser</b>r with rating 1.2, then if <b>@baduser</b> gives a 50% upvote to something, you will add a <b>60%</b> downvote to the same post or comment, while a rating of 0.5 would make you downvote <b>25%</b>, etc.
+                            <br/>
+                            <br/>
+                                Note that if your settings would make you use more voting power than necessary downvotecontrol will adapt dynamically the vote percentage when voting, so that you counter the upvote fully.
+                            </p>
                             <form onSubmit={(e) => this.add_trail(e, -1)}>
                             <input type={"text"} placeholder={"username"} value={this.state.trail_username} onChange={(e) => this.setState({trail_username : e.target.value})}/>
                             <input type={"number"} min={0} max={2.5} step={0.1} style={{width : "60px"}} value={this.state.trail_ratio} onChange={(e) => this.setState({trail_ratio : e.target.value})}/>
@@ -455,7 +459,12 @@ class Settings extends React.Component
                         <Tab eventKey="counter_downvotes" title="Counter downvotes " >
                             <h5> Counter downvotes </h5>
                             <p> Used to counteract downvotes from specified accounts, meaning that you will upvote anything that they choose to downvote at a given rate relative to their downvote. </p>
-                            <p>Example: If you choose to counter downvote <b>@baduser</b>r with rating 1.2, then if <b>@baduser</b> gives a 50% downvote on something, you will do a <b>60%</b> upvote to the same post or comment, while a rating of 0.5 would make you upvote at <b>25%</b>, etc.</p>
+                            <p>Example: If you choose to counter downvote <b>@baduser</b>r with rating 1.2, then if <b>@baduser</b> gives a 50% downvote on something, you will do a <b>60%</b> upvote to the same post or comment, while a rating of 0.5 would make you upvote at <b>25%</b>, etc.
+                            <br/>
+                            <br/>
+                            Note that if your settings would make you use more voting power than necessary downvotecontrol will adapt dynamically the vote percentage when voting, so that you counter the downvote fully.
+                            </p>
+
                             <form onSubmit={(e) => this.add_trail(e, 2)}>
                             <input type={"text"} placeholder={"username"} value={this.state.trail_username} onChange={(e) => this.setState({trail_username : e.target.value})}/>
                             <input type={"number"} min={0} max={2.5} step={0.1} style={{width : "60px"}} value={this.state.trail_ratio} onChange={(e) => this.setState({trail_ratio : e.target.value})}/>
